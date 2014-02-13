@@ -1,0 +1,15 @@
+<ul class="pagination center-block" id="tpagination">
+
+</ul>
+
+<script id="pageTemplate" type="text/x-jsrender">
+    <li class="{{:liClass}}"><a href="#{{:pageName}}/page/{{:pageNumber}}">{{:pageNumberText}}</a></li>
+</script>
+
+<!--<script id="pageTemplate" type="text/x-jsrender">
+    <li class="{{:liClass}}"><a href="#{{:pageName}}/page/{{:pageNumber}}">{{:pageNumberText}}</a></li>
+</script>-->
+
+<script>
+    $('.pagination .disabled a').attr("href", location.href);
+</script>

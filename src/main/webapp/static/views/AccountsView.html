@@ -1,0 +1,62 @@
+<div class="col-lg-4 col-md-offset-3">
+    <div class="btn btn-info" id="getUsersButton" hidden="true" style="visibility: hidden">
+        Get users
+    </div>
+    <div id="detailsModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <table class="table">
+            <tr>
+                <th>Account Number</th>
+                <th>Owner Name</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+            <tbody id="result">
+
+            </tbody>
+        </table>
+    </div>
+    <div id="paginationdiv">
+
+    </div>
+</div>
+
+<script id="template" type="text/x-jsrender">
+        <tr>
+            <td>{{:accountNumber}}</td>
+            <td>{{:userId}}</td>
+            <td>
+                <div class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle">
+                        {{:status}}
+                        <b class="caret"></b>
+                    </a>
+                    <ul id="{{:accountNumber}}" class="dropdown-menu">
+                        <li>Active</li>
+                        <li>Blocked</li>
+                    </ul>
+                </div>
+            </td>
+            <td><div class="btn btn-info" width="20px" style="font-size: 12pt">i</div></td>
+        </tr>
+</script>
+
+<!--
+<div class="dropdown">
+    <a data-toggle="dropdown" class="dropdown-toggle">
+        {{:status}}
+        <b class="caret"></b>
+    </a>
+    <ul id="{{:accountNumber}}" class="dropdown-menu">
+        <li>Active</li>
+        <li>Blocked</li>
+    </ul>
+</div>-->

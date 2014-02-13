@@ -1,0 +1,25 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+    <http  use-expressions="true">
+        <form-login login-page="/page"/>
+        <!--<logout logout-url="/rest/login" />-->
+        <intercept-url pattern="/page" access="permitAll"/>
+        <intercept-url pattern="/rest/login" access="permitAll"/>
+        <intercept-url pattern="/rest/transaction" access="hasRole('Client')"/>
+        <intercept-url pattern="/rest/userslist" access="hasRole('Employee')"/>
+        <intercept-url pattern="/*" access="isAuthenticated()"/>
+    </http>
+
+    <authentication-manager>
+        <authentication-provider ref="customAuthenticationProvider"/>
+    </authentication-manager>
+
+    <!--<beans:bean id="customAuthenticationProvider" class="com.security.CustomAuthenticationProvider"/>-->
+
+</beans:beans>
