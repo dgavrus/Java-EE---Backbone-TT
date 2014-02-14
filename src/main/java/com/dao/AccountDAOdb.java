@@ -1,6 +1,7 @@
 package com.dao;
 
 import com.model.Account;
+import com.model.ClientAccount;
 import org.json.JSONArray;
 
 import javax.sql.DataSource;
@@ -16,6 +17,8 @@ public interface AccountDAOdb {
     public List<Account> listAccounts();
 
     public List<Account> listAccounts(int page);
+
+    public List<ClientAccount> listClientAccounts(int page);
 
     public Integer getAccountsCount();
 

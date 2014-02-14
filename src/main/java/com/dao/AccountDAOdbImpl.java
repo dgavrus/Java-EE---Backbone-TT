@@ -1,6 +1,7 @@
 package com.dao;
 
 import com.model.Account;
+import com.model.ClientAccount;
 import com.model.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,6 +45,16 @@ public class AccountDAOdbImpl implements AccountDAOdb {
         String query = "select * from accounts limit " + ((page - 1) * 10) + ", 10";
         List<Account> accountList = jdbcTemplateObject.query(query, new AccountMapper());
         return accountList;
+    }
+
+    public List<ClientAccount> listClientAccounts(int page) {
+        List<ClientAccount> clientAccountList = new ArrayList<ClientAccount>();
+        for(Account account : listAccounts(page)){
+            String fn = userDAOdb.getFirstNameById(account.getUserId());
+            String ln = userDAOdb.getLastNameById(account.getUserId());
+            clientAccountList.add(new ClientAccount(account, fn, ln));
+        }
+        return clientAccountList;
     }
 
     public void updateAccount(Account account){

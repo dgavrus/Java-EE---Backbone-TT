@@ -20,7 +20,9 @@ var Account = Backbone.Model.extend({
         moneyAmount: null,
         userId: null,
         accountNumber: null,
-        status: null
+        status: null,
+        ownerFirstName: null,
+        ownerLastName: null
     },
     url: 'rest/userslist'
 });
@@ -71,15 +73,30 @@ var PaginationInfo = Backbone.Model.extend({
 
 window.AccountDetailsView = Backbone.View.extend({
 
-    initialize:function(parent){
+    initialize:function(parent, currentAccount){
+        this.account = currentAccount;
         this.parent = parent;
+        this.render();
     },
 
-    render:function(parent){
-        $(this.el).html(this.template());
+    render:function(){
+        this.parent.$('#detailsModalBody').html(this.template());
         var modalTemplate = $.templates('#modalTemplate');
-        modalTemplate.link(this.$('#modalResult'), this.parent.collection.toJSON());
+        modalTemplate.link(this.$('#modalResult'), this.account.toJSON());
+        $('#detailsModal').modal();
         return this;
+    },
+
+    events: {
+        "click #detailsDropdown li" : "changeStatus"
+    },
+
+    changeStatus: function(e){
+        e.preventDefault();
+        var status = $(e.target).text();
+        this.account.set({status: status});
+        this.account.save();
+        /*$(e.target.parentNode).html = status;*/
     }
 
 });
@@ -145,11 +162,10 @@ window.AccountsView = Backbone.View.extend({
     },
 
     events: {
-        "click .dropdown-menu li" : "changeStatus",
         "click .btn" : "showDetails"
     },
 
-    changeStatus: function(e){
+    /*changeStatus: function(e){
         e.preventDefault();
         var status = $(e.target).text();
         var accountId = e.target.parentNode.id;
@@ -160,19 +176,20 @@ window.AccountsView = Backbone.View.extend({
                 this.collection.fetch();
             }});
         this.render();
-    },
+    },*/
 
-    showDetails: function(){
+    showDetails: function(e){
+        e.preventDefault();
+        var accountId = e.target.parentNode.id;
         var self = this;
-        var accountDetailsView = new AccountDetailsView(this);
-        var modal = new Backbone.BootstrapModal({
+        var currentAccount = this.collection.findWhere({accountNumber: parseInt(accountId)});
+        var accountDetailsView = new AccountDetailsView(this, currentAccount);
+        /*var modal = new Backbone.BootstrapModal({
             content:accountDetailsView,
-            allowCancel:false,
-            hidden: function(){
-                self.render();
-            }
+            allowCancel:false
+
         });
-        modal.open();
+        modal.open();*/
         /*var accountDetailsView = new AccountDetailsView();
         $('#detailsModalBody').html(accountDetailsView.template());
         accountDetailsView.render();

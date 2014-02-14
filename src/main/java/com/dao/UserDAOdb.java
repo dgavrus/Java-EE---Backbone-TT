@@ -12,5 +12,8 @@ public interface UserDAOdb {
 
     public List<User> listUsers();
 
+    public String getFirstNameById(int id);
+
+    public String getLastNameById(int id);
 
 }

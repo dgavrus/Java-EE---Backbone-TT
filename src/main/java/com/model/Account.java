@@ -1,17 +1,20 @@
 package com.model;
 
+import com.dao.UserDAOdb;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 public class Account {
 
     public Account(int id, long moneyAmount, int userId, int accountNumber,
-                   boolean isLocked, boolean isActivated){
+                  Status status){
         this.id = id;
         this.moneyAmount = moneyAmount;
         this.userId = userId;
         this.accountNumber = accountNumber;
-        this.status = Status.Active;
+        this.status = status;
     }
 
     public Account(){
@@ -23,6 +26,10 @@ public class Account {
     private long moneyAmount;
 
     private int userId;
+
+    private String ownerFirstName;
+
+    private String ownerLastName;
 
     private int accountNumber;
 
@@ -73,6 +80,23 @@ public class Account {
 
     public void setStatus(Status status){
         this.status = status;
+    }
+
+    public String getOwnerFirstName() {
+
+        return ownerFirstName;
+    }
+
+    public void setOwnerFirstName(String ownerFirstName) {
+        this.ownerFirstName = ownerFirstName;
+    }
+
+    public String getOwnerLastName() {
+        return ownerLastName;
+    }
+
+    public void setOwnerLastName(String ownerLastName) {
+        this.ownerLastName = ownerLastName;
     }
 
     @JsonIgnore

@@ -18,8 +18,8 @@
             <td>{{:accountNumber}}</td>
         </tr>
         <tr>
-            <td>Owner name</td>
-            <td>{{:userId}}</td>
+            <td>Owner full name</td>
+            <td>{{:ownerFirstName}} {{:ownerLastName}}</td>
         </tr>
         <tr>
             <td>Status</td>
@@ -29,7 +29,7 @@
                         {{:status}}
                         <b class="caret"></b>
                     </a>
-                    <ul id="{{:accountNumber}}" class="dropdown-menu">
+                    <ul id="{{:accountNumber}}" class="dropdown-menu" id="detailsDropdown">
                         <li>Active</li>
                         <li>Blocked</li>
                     </ul>

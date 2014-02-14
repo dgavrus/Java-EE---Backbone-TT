@@ -57,6 +57,30 @@ public class UserDAOdbImpl implements UserDAOdb {
         return jdbcTemplateObject.query(query, new UserMapper());
     }
 
+    public String getFirstNameById(int id) {
+        String SQL = "select firstName from users where id = ?";
+        String fn;
+        try {
+            fn = jdbcTemplateObject.queryForObject(SQL,
+                    new Object[]{id}, String.class);
+        } catch (EmptyResultDataAccessException e){
+            return null;
+        }
+        return fn;
+    }
+
+    public String getLastNameById(int id) {
+        String SQL = "select lastName from users where id = ?";
+        String ln;
+        try {
+            ln = jdbcTemplateObject.queryForObject(SQL,
+                    new Object[]{id}, String.class);
+        } catch (EmptyResultDataAccessException e){
+            return null;
+        }
+        return ln;
+    }
+
     public void delete(Integer id) {
 
     }

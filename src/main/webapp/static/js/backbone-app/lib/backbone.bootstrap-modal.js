@@ -36,10 +36,10 @@
       <div class="modal-footer">\
         <% if (allowCancel) { %>\
           <% if (cancelText) { %>\
-            <a href="#" class="btn cancel">{{cancelText}}</a>\
+            <a href="page#accounts" class="btn cancel">{{cancelText}}</a>\
           <% } %>\
         <% } %>\
-        <a href="#" class="btn ok btn-primary">{{okText}}</a>\
+        <a href="page#accounts" class="btn ok btn-primary">{{okText}}</a>\
       </div>\
     <% } %>\
     </div></div>\
@@ -73,6 +73,7 @@
                 }
             },
             'click .ok': function(event) {
+
                 event.preventDefault();
 
                 this.trigger('ok');
@@ -140,6 +141,7 @@
          * @api private
          */
         render: function() {
+
             var $el = this.$el,
                 options = this.options,
                 content = options.content;

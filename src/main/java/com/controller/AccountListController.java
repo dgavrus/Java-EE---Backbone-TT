@@ -5,6 +5,7 @@ import com.dao.AccountDAOdbImpl;
 import com.dao.UserDAOdb;
 import com.dao.UserDAOdbImpl;
 import com.model.Account;
+import com.model.ClientAccount;
 import com.model.PaginationInfo;
 import com.model.User;
 import com.service.TransactionService;
@@ -35,14 +36,14 @@ public class AccountListController {
 
     @RequestMapping(value = "/rest/userslist", method = RequestMethod.GET, produces="application/json")
     public @ResponseBody
-    List<Account> getUsersList(HttpServletRequest request) throws JSONException, IOException {
+    List<ClientAccount> getUsersList(HttpServletRequest request) throws JSONException, IOException {
         int pageNumber;
         try {
             pageNumber = Integer.parseInt(request.getParameter("page"));
         } catch (NumberFormatException e){
             pageNumber = 1;
         }
-        return accountDAOdb.listAccounts(pageNumber);
+        return accountDAOdb.listClientAccounts(pageNumber);
     }
 
     @RequestMapping(value = "/rest/userslist/pagination", method = RequestMethod.GET)
@@ -63,7 +64,7 @@ public class AccountListController {
     }
 
     @RequestMapping(value = "/rest/userslist", method = {RequestMethod.POST, RequestMethod.PUT})
-    public @ResponseBody void updateAccountStatus(@RequestBody Account account){
+    public @ResponseBody void updateAccountStatus(@RequestBody ClientAccount account){
         accountDAOdb.updateAccountStatus(account);
     }
 
