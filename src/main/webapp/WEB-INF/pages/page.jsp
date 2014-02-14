@@ -13,6 +13,7 @@
 <script src="http://www.jsviews.com/download/jsviews.js"></script>
 <script src="/static/js/backbone-app/lib/underscore-min.js"></script>
 <script src="/static/js/backbone-app/lib/backbone-min.js"></script>
+<script src="/static/js/backbone-app/lib/backbone.bootstrap-modal.js"></script>
 
 <div class="navbar">
     <h3>

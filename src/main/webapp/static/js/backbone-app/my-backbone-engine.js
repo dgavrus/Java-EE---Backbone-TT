@@ -71,13 +71,15 @@ var PaginationInfo = Backbone.Model.extend({
 
 window.AccountDetailsView = Backbone.View.extend({
 
-    initialize:function(){
-        
+    initialize:function(parent){
+        this.parent = parent;
     },
 
-    render:function(){
+    render:function(parent){
         $(this.el).html(this.template());
-        var template = $.templates("#modalTemplate");
+        var modalTemplate = $.templates('#modalTemplate');
+        modalTemplate.link(this.$('#modalResult'), this.parent.collection.toJSON());
+        return this;
     }
 
 });
@@ -161,7 +163,21 @@ window.AccountsView = Backbone.View.extend({
     },
 
     showDetails: function(){
-
+        var self = this;
+        var accountDetailsView = new AccountDetailsView(this);
+        var modal = new Backbone.BootstrapModal({
+            content:accountDetailsView,
+            allowCancel:false,
+            hidden: function(){
+                self.render();
+            }
+        });
+        modal.open();
+        /*var accountDetailsView = new AccountDetailsView();
+        $('#detailsModalBody').html(accountDetailsView.template());
+        accountDetailsView.render();
+        var modalTemplate = $.templates('#modalTemplate');
+        $('#detailsModal').modal();*/
     },
 
     username:function(){
@@ -208,6 +224,7 @@ window.TransactionsView = Backbone.View.extend({
         this.collection.fetch({
             data: $.param({page: this.pagination.paginationParams.attributes.activePage})
         });
+        this.render();
     },
 
     username:function(){
@@ -285,14 +302,14 @@ window.PaginationView = Backbone.View.extend({
         while(current < sp && sp > 1){
             sp--, lp--;
         }
-        var liClass = current == 1 ? "disabled" : "default";
-        pages += "{\"pageName\":\"" + pageName + "\",\"liClass\":\"" + liClass + "\",\"pageNumberText\":\"prev\",\"pageNumber\":" + (parseInt(current) - 1) + "},";
+        var liClass = current <= 1 ? "disabled" : "default";
+        pages += "{\"pageName\":\"" + pageName + "\",\"liClass\":\"" + liClass + "\",\"pageNumberText\":\"prev\",\"pageNumber\":" + (current <= 1 ? current : (parseInt(current) - 1)) + "},";
         for(var i = sp; i <= lp; i++){
             liClass = current == i ? "active" : "default";
             pages += "{\"current\":" + current + ",\"pageName\":\"" + pageName + "\",\"liClass\":\"" + liClass + "\",\"pageNumberText\":" + i + ",\"pageNumber\":" + i +"},";
         }
-        liClass = current == pagesCount ? "disabled" : "default";
-        pages += "{\"current\":" + current + ",\"pageName\":\"" + pageName + "\",\"liClass\":\"" + liClass + "\",\"pageNumberText\":\"next\",\"pageNumber\":" + (parseInt(current) + 1) + "}";
+        liClass = current >= pagesCount ? "disabled" : "default";
+        pages += "{\"current\":" + current + ",\"pageName\":\"" + pageName + "\",\"liClass\":\"" + liClass + "\",\"pageNumberText\":\"next\",\"pageNumber\":" + (current >= pagesCount ? current : (parseInt(current) + 1)) + "}";
         pages += "]";
         console.log(pages);
         return $.parseJSON(pages);
@@ -323,7 +340,7 @@ window.templateLoader = {
 
 };
 
-var loginStatus;
+var loginStatus = new LoginStatus({username:"sign in please"});
 
 window.Router = Backbone.Router.extend({
 
@@ -448,7 +465,7 @@ window.Router = Backbone.Router.extend({
     }
 });
 
-templateLoader.load(["LoginView", "AccountsView", "TransactionsView", "LogoutView", "PaginationView"],
+templateLoader.load(["LoginView", "AccountsView", "TransactionsView", "LogoutView", "PaginationView", "AccountDetailsView"],
     function () {
         app = new Router();
         Backbone.history.start();
