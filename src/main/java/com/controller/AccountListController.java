@@ -64,7 +64,7 @@ public class AccountListController {
     }
 
     @RequestMapping(value = "/rest/userslist", method = {RequestMethod.POST, RequestMethod.PUT})
-    public @ResponseBody void updateAccountStatus(@RequestBody ClientAccount account){
+    public @ResponseBody void updateAccountStatus(@RequestBody Account account){
         accountDAOdb.updateAccountStatus(account);
     }
 

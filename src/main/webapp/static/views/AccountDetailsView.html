@@ -23,15 +23,15 @@
         </tr>
         <tr>
             <td>Status</td>
-            <td>
+            <td width="100px">
                 <div class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle">
+                    <a id="dt" data-toggle="dropdown" class="dropdown-toggle">
                         {{:status}}
                         <b class="caret"></b>
                     </a>
                     <ul id="{{:accountNumber}}" class="dropdown-menu" id="detailsDropdown">
-                        <li>Active</li>
-                        <li>Blocked</li>
+                        <li id="active">Active</li>
+                        <li id="blocked">Blocked</li>
                     </ul>
                 </div>
             </td>

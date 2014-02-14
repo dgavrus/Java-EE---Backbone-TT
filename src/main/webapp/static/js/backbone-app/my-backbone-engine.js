@@ -73,6 +73,8 @@ var PaginationInfo = Backbone.Model.extend({
 
 window.AccountDetailsView = Backbone.View.extend({
 
+    el: '#detailsModalBody',
+
     initialize:function(parent, currentAccount){
         this.account = currentAccount;
         this.parent = parent;
@@ -80,25 +82,30 @@ window.AccountDetailsView = Backbone.View.extend({
     },
 
     render:function(){
-        this.parent.$('#detailsModalBody').html(this.template());
+        $('#detailsModalBody').html(this.template());
         var modalTemplate = $.templates('#modalTemplate');
         modalTemplate.link(this.$('#modalResult'), this.account.toJSON());
-        $('#detailsModal').modal();
+        $('#detailsModal').modal('show');
+        var self = this;
+        $('#active').click(function(){
+            self.changeStatus("Active");
+        });
+        $('#blocked').click(function(){
+            self.changeStatus("Blocked");
+        });
         return this;
     },
 
-    events: {
-        "click #detailsDropdown li" : "changeStatus"
-    },
-
-    changeStatus: function(e){
-        e.preventDefault();
-        var status = $(e.target).text();
+    changeStatus: function(status){
+        $('#dt').html(status +
+            "<b class=\"caret\"></b>");
         this.account.set({status: status});
-        this.account.save();
-        /*$(e.target.parentNode).html = status;*/
+        this.account.save(null, {
+            success: function(){
+                this.collection.fetch();
+            }
+        });
     }
-
 });
 
 window.LoginView = Backbone.View.extend({
@@ -159,6 +166,7 @@ window.AccountsView = Backbone.View.extend({
         var pageTemplate = $.templates("#pageTemplate");
         pageTemplate.link(this.$("#tpagination"), this.pagination.getPages());
         return this;
+
     },
 
     events: {
@@ -184,17 +192,6 @@ window.AccountsView = Backbone.View.extend({
         var self = this;
         var currentAccount = this.collection.findWhere({accountNumber: parseInt(accountId)});
         var accountDetailsView = new AccountDetailsView(this, currentAccount);
-        /*var modal = new Backbone.BootstrapModal({
-            content:accountDetailsView,
-            allowCancel:false
-
-        });
-        modal.open();*/
-        /*var accountDetailsView = new AccountDetailsView();
-        $('#detailsModalBody').html(accountDetailsView.template());
-        accountDetailsView.render();
-        var modalTemplate = $.templates('#modalTemplate');
-        $('#detailsModal').modal();*/
     },
 
     username:function(){
