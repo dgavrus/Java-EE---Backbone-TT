@@ -26,8 +26,15 @@ public class TransactionDAOdbImpl implements TransactionDAOdb {
         return transactionList;
     }
 
-    public List<Transaction> userTransactionList(int accountId, int page) {
-        String query = "select * from transactions where source = ? or dest = ? limit " + ((page - 1) * 10) + ", 10";
+    public List<Transaction> userTransactionList(int accountId, int count) {
+        String query = "select * from transactions where source = ? or dest = ? " + "order by id desc limit " + count;
+        List<Transaction> transactionList = jdbcTemplateObject.query(
+                query, new Object[]{accountId, accountId}, new TransactionMapper());
+        return transactionList;
+    }
+
+    public List<Transaction> userTransactionList(int accountId, int page, int count) {
+        String query = "select * from transactions where source = ? or dest = ? limit " + ((page - 1) * count) + ", " + count;
         List<Transaction> transactionList = jdbcTemplateObject.query(
                 query, new Object[]{accountId, accountId}, new TransactionMapper());
         return transactionList;

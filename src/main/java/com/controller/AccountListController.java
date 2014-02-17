@@ -1,19 +1,15 @@
 package com.controller;
 
-import com.dao.AccountDAOdb;
-import com.dao.AccountDAOdbImpl;
-import com.dao.UserDAOdb;
-import com.dao.UserDAOdbImpl;
-import com.model.Account;
-import com.model.ClientAccount;
-import com.model.PaginationInfo;
-import com.model.User;
+import com.dao.*;
+import com.model.*;
 import com.service.TransactionService;
 import com.service.UserService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import sun.org.mozilla.javascript.internal.json.JsonParser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +29,9 @@ public class AccountListController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    TransactionDAOdb transactionDAOdb;
 
     @RequestMapping(value = "/rest/userslist", method = RequestMethod.GET, produces="application/json")
     public @ResponseBody
@@ -66,6 +65,14 @@ public class AccountListController {
     @RequestMapping(value = "/rest/userslist", method = {RequestMethod.POST, RequestMethod.PUT})
     public @ResponseBody void updateAccountStatus(@RequestBody Account account){
         accountDAOdb.updateAccountStatus(account);
+    }
+
+    @RequestMapping(value = "/rest/userslist/transaction", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<Transaction> getUserTransactions(HttpServletRequest request){
+        int accountNumber = Integer.parseInt(request.getParameter("accountNumber"));
+        List<Transaction> result = transactionDAOdb.userTransactionList(accountNumber, 5);
+        return result;
     }
 
     private PaginationInfo pagination;

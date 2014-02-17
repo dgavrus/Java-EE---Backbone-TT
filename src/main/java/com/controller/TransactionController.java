@@ -49,9 +49,9 @@ public class TransactionController {
         try{
             pageNumber = Integer.parseInt(request.getParameter("page"));
         } catch (NumberFormatException e){
-            return transactionDAOdb.userTransactionList(authenticatedUser.getAccountId(), 1);
+            return transactionDAOdb.userTransactionList(authenticatedUser.getAccountId(), 1, 10);
         }
-        return transactionDAOdb.userTransactionList(authenticatedUser.getAccountId(), pageNumber);
+        return transactionDAOdb.userTransactionList(authenticatedUser.getAccountId(), pageNumber, 10);
     }
 
     @RequestMapping(value = "/rest/transaction", method = RequestMethod.POST)

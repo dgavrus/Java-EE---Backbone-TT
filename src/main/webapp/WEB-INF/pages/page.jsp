@@ -31,7 +31,14 @@
         </div>
     </div>
 </div>
-<script src="static/js/backbone-app/my-backbone-engine.js"></script>
+<script src="static/js/backbone-app/models/models.js"></script>
+<script src="static/js/backbone-app/views/PaginationView.js"></script>
+<script src="static/js/backbone-app/views/LogoutView.js"></script>
+<script src="static/js/backbone-app/views/TransactionsView.js"></script>
+<script src="static/js/backbone-app/views/LoginView.js"></script>
+<script src="static/js/backbone-app/views/AccountsView.js"></script>
+<script src="static/js/backbone-app/views/AccountDetailsView.js"></script>
+<script src="static/js/backbone-app/main-backbone-app.js"></script>
 
 </body>
 </html>

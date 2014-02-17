@@ -1,4 +1,5 @@
 <div class="col-md-8" style="margin-top: 50px">
+    <h4 style="text-align: center">Account details</h4>
     <div>
         <table class="table">
             <tr>
@@ -6,6 +7,21 @@
                 <th>Value</th>
             </tr>
             <tbody id="modalResult">
+
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h5 style="text-align: center">Last 5 transactions</h5>
+        <table class="table">
+
+            <tr>
+                <th>Source</th>
+                <th>Destination</th>
+                <th>Money Amount</th>
+                <th>Date</th>
+            </tr>
+            <tbody id="modalTransactions">
 
             </tbody>
         </table>
@@ -39,5 +55,14 @@
         <tr>
             <td>Money available</td>
             <td>{{:moneyAmount}}</td>
+        </tr>
+</script>
+
+<script id="modalTransactionsTemplate" type="text/x-jsrender">
+        <tr>
+           <td>{{:sourceAccountId}}</td>
+           <td>{{:destAccountId}}</td>
+           <td>{{:moneyAmount}}</td>
+           <td>{{:date}}</td>
         </tr>
 </script>
