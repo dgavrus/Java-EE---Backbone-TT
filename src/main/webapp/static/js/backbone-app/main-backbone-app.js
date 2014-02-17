@@ -25,7 +25,7 @@ templateLoader.load(["LoginView", "AccountsView", "TransactionsView", "LogoutVie
         Backbone.history.start();
     });
 
-var loginStatus = new LoginStatus({username:"sign in please"});
+var loginStatus;
 
 window.Router = Backbone.Router.extend({
 
@@ -38,12 +38,12 @@ window.Router = Backbone.Router.extend({
     },
 
     initialize: function () {
-        /*this.login = new LoginView();
-         this.LoginView.render()*/
+
     },
 
     login: function() {
-        if(!loginStatus){
+        var self = this;
+        /*if(!loginStatus){*/
             loginStatus = new LoginStatus();
             var self = this;
             loginStatus.fetch({
@@ -51,8 +51,13 @@ window.Router = Backbone.Router.extend({
                     console.log(loginStatus.attributes.loggedIn);
                     if(loginStatus.attributes.loggedIn){
                         switch (loginStatus.attributes.role){
-                            case 'Client': window.location.hash = "#transactions";
-                            case 'Employee': window.location.hash = "#accounts";
+                            case 'Client': /*window.location.href = "#transactions";*/
+                                            self.navigate("#transactions", {trigger: true});
+                                            return;
+                                            break;
+                            case 'Employee': self.navigate("#accounts", {trigger: true});
+                                            return;
+                                            break;
                         }
                     } else {
                         console.log("hmmm...");
@@ -62,7 +67,7 @@ window.Router = Backbone.Router.extend({
                     console.log("error fetch");
                 }
             });
-        }
+        /*}*/
         if (!this.loginView) {
             this.loginView = new LoginView();
             this.loginView.render();
@@ -80,7 +85,7 @@ window.Router = Backbone.Router.extend({
             success: function(){
                 if(!isValidPage(self, page, pages)){
                     page = pages.attributes.activePage;
-                    location.hash = "#accounts/page/" + page;
+                    self.navigate("#accounts/page/" + page, {trigger: true});
                 }
 
                 pages.attributes.activePage = page;
@@ -99,13 +104,13 @@ window.Router = Backbone.Router.extend({
                         successFetch(data, self, pages)
                     },
                     error: function(err, xhr, status){
-                        errorFetch(xhr);
+                        errorFetch(xhr, self);
                     }
                 });
 
             },
             error: function(err, xhr, status){
-                errorFetch(xhr);
+                errorFetch(xhr, self);
             }});
 
     },
@@ -120,7 +125,7 @@ window.Router = Backbone.Router.extend({
             success: function(){
                 if(!isValidPage(self, page, pages)){
                     page = pages.attributes.activePage;
-                    location.hash = "#transactions/page/" + page;
+                    self.navigate("#transactions/page/" + page, {trigger: true});
                 }
 
                 pages.attributes.activePage = page;
@@ -139,13 +144,13 @@ window.Router = Backbone.Router.extend({
                         successFetch(data, self, pages)
                     },
                     error: function(err, xhr, status){
-                        errorFetch(xhr);
+                        errorFetch(xhr, self);
                     }
                 });
 
             },
             error: function(err, xhr, status){
-                errorFetch(xhr);
+                errorFetch(xhr, self);
             }});
     }
 });
@@ -161,13 +166,13 @@ function successFetch(data, self, pages, view){
     this.paginationView.render();
     this.paginationView.paginationParams.set({activePage:pages.attributes.activePage});
     if(pages.attributes.url.search("transaction") > 0){
-        if (!self.transactionsView) {
+        if (!self.transactionsView || true) {
             self.transactionsView = new TransactionsView({collection:self.userTransactions,pagination:this.paginationView});
             self.transactionsView.render();
             $('#content').html(self.transactionsView.el);
         }
     } else {
-        if (!self.accountsView) {
+        if (!self.accountsView || true) {
             self.accountsView = new AccountsView({collection:self.accountList,pagination:this.paginationView});
             self.accountsView.render();
             $('#content').html(self.accountsView.el);
@@ -176,9 +181,9 @@ function successFetch(data, self, pages, view){
     console.log("success");
 }
 
-function errorFetch(){
+function errorFetch(self){
     console.log("error");
-    location.href = "/page";
+    self.navigate("", {trigger: true});
 }
 
 function isValidPage(self, page, pages){

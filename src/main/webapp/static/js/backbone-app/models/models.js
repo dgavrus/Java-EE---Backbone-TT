@@ -1,6 +1,6 @@
 var LoginStatus = Backbone.Model.extend({
     defaults:{
-        username: '',
+        username: 'sign in please',
         password: '',
         loggedIn: false,
         role: null

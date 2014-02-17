@@ -30,11 +30,8 @@ window.PaginationView = Backbone.View.extend({
         } else {
             sp = startPage, lp = lastPage;
         }
-        while(current > lp && lp < pagesCount){
-            sp++, lp++;
-        }
-        while(current < sp && sp > 1){
-            sp--, lp--;
+        if(current > lp && lp < pagesCount){
+            sp += current - lp, lp = current;
         }
         var liClass = current <= 1 ? "disabled" : "default";
         pages += "{\"pageName\":\"" + pageName + "\",\"liClass\":\"" + liClass + "\",\"pageNumberText\":\"prev\",\"pageNumber\":" + (current <= 1 ? current : (parseInt(current) - 1)) + "},";

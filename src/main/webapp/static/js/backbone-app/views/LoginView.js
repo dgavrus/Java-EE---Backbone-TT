@@ -22,11 +22,11 @@ window.LoginView = Backbone.View.extend({
         loginStatus.save(null, {
             success: function(data){
                 console.log(data);
-                if(data.attributes.role == "Client"){
-                    location.hash = "#transactions";
-                }
-                else if(data.attributes.role == "Employee"){
-                    location.hash = "#accounts";
+                switch (data.attributes.role){
+                    case "Client": location.hash = "#transactions";
+                                    break;
+                    case "Employee": location.hash = "#accounts";
+                                    break;
                 }
             },   error: function(){
                 console.log("something wrong");

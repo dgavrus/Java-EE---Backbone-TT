@@ -46,7 +46,7 @@ public class TransactionController {
     List<Transaction> getUserTransactions(HttpServletRequest request){
         User authenticatedUser = userService.getAuthenticatedUser();
         int pageNumber;
-        try{
+        try {
             pageNumber = Integer.parseInt(request.getParameter("page"));
         } catch (NumberFormatException e){
             return transactionDAOdb.userTransactionList(authenticatedUser.getAccountId(), 1, 10);

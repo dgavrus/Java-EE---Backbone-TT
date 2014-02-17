@@ -34,18 +34,16 @@ public class TransactionService {
         return false;
     }
 
-    private String makeTransaction(int sourceAccountId, int destAccountId,
+    private TransactionEnding makeTransaction(int sourceAccountId, int destAccountId,
                                 long moneyAmount) {
 
-            if(moneyAmount <= 0){
-                return "Wrong money amount!";
-            } else if(!isEnoughMoney(sourceAccountId, moneyAmount)){
-                return "You haven't enough money on " +
-                        "your balance for this operation";
-            } else if(!isNotLockedAndActivated(sourceAccountId, destAccountId)){
-                return "Source or destination account " +
-                        "is locked or not activated";
-            }
+        if(moneyAmount <= 0){
+            return TransactionEnding.WRONG_MONEY_AMOUNT;
+        } else if(!isEnoughMoney(sourceAccountId, moneyAmount)){
+            return TransactionEnding.NOT_ENOUGH_MONEY;
+        } else if(!isNotLockedAndActivated(sourceAccountId, destAccountId)){
+            return TransactionEnding.NOT_ACTIVATED;
+        }
 
         Account source = accountDAOdb.getAccount(sourceAccountId);
         Account dest = accountDAOdb.getAccount(destAccountId);
@@ -58,14 +56,21 @@ public class TransactionService {
                         destAccountId,
                         moneyAmount, new Date())
         );
-        return "Successful";
+        return TransactionEnding.SUCCESSFUL;
     }
 
-    public String makeTransaction(Transaction transaction) {
+    public TransactionEnding makeTransaction(Transaction transaction) {
         long moneyAmount = transaction.getMoneyAmount();
         int sourceAccountId = transaction.getSourceAccountId();
         int destAccountId = transaction.getDestAccountId();
         return makeTransaction(sourceAccountId, destAccountId, moneyAmount);
+    }
+
+    public enum TransactionEnding {
+        WRONG_MONEY_AMOUNT,
+        NOT_ENOUGH_MONEY,
+        NOT_ACTIVATED,
+        SUCCESSFUL
     }
 
 }

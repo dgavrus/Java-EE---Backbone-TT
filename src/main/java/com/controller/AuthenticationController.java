@@ -49,7 +49,7 @@ public class AuthenticationController {
         if(loginStatus.isLoggedIn() ||
                 (loginStatus.getUsername().isEmpty() && loginStatus.getPassword().isEmpty())){
             SecurityContextHolder.getContext().setAuthentication(null);
-            return new LoginStatus(null, null, false, null);
+            return new LoginStatus("sign in please", null, false, null);
         }
 
         String username = loginStatus.getUsername();
