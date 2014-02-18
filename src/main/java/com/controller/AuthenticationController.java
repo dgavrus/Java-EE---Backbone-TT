@@ -43,7 +43,7 @@ public class AuthenticationController {
     @RequestMapping(value = "/rest/login", method = {RequestMethod.POST, RequestMethod.PUT},
             consumes = "application/json")
     public @ResponseBody
-    LoginStatus login(HttpServletRequest request, @RequestBody LoginStatus loginStatus) {
+    LoginStatus login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginStatus loginStatus) {
 
         //Logout
         if(loginStatus.isLoggedIn() ||
@@ -55,6 +55,9 @@ public class AuthenticationController {
         String username = loginStatus.getUsername();
         String password = loginStatus.getPassword();
         loginStatus = customAuthenticationProvider.authenticate(username, password);
+        if(loginStatus.getUsername() == null || !loginStatus.isLoggedIn()){
+            response.setStatus(500);
+        }
         return loginStatus;
     }
 

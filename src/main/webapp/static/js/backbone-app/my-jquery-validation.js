@@ -1,5 +1,9 @@
 function moneyAmountValidate(field){
-    if(field.val() != "111"){
-        return "Your name is not 111";
+    if(field.val() <= 0){
+        return "Money amount should be more than 0"
     }
+}
+
+function destAccValidate(field){
+
 }

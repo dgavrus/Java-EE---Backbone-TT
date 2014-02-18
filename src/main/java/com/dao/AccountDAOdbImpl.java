@@ -6,6 +6,7 @@ import com.model.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +27,12 @@ public class AccountDAOdbImpl implements AccountDAOdb {
 
     public Account getAccount(int accountId){
         String query = "select * from accounts where accountNumber = " + accountId;
-        Account account = jdbcTemplateObject.queryForObject(query, new AccountMapper());
+        Account account;
+        try {
+            account = jdbcTemplateObject.queryForObject(query, new AccountMapper());
+        } catch (EmptyResultDataAccessException e){
+            return null;
+        }
         return account;
     }
 

@@ -43,36 +43,33 @@ window.Router = Backbone.Router.extend({
 
     login: function() {
         var self = this;
-        /*if(!loginStatus){*/
-            loginStatus = new LoginStatus();
-            var self = this;
-            loginStatus.fetch({
-                success: function(){
-                    console.log(loginStatus.attributes.loggedIn);
-                    if(loginStatus.attributes.loggedIn){
-                        switch (loginStatus.attributes.role){
-                            case 'Client': /*window.location.href = "#transactions";*/
-                                            self.navigate("#transactions", {trigger: true});
-                                            return;
-                                            break;
-                            case 'Employee': self.navigate("#accounts", {trigger: true});
-                                            return;
-                                            break;
-                        }
-                    } else {
-                        console.log("hmmm...");
+        loginStatus = new LoginStatus();
+        loginStatus.fetch({
+            success: function(){
+                console.log(loginStatus.attributes.loggedIn);
+                if(loginStatus.attributes.loggedIn){
+                    switch (loginStatus.attributes.role){
+                        case 'Client':
+                                        self.navigate("#transactions", {trigger: true});
+                                        return;
+                                        break;
+                        case 'Employee': self.navigate("#accounts", {trigger: true});
+                                        return;
+                                        break;
                     }
-                },
-                error: function(){
-                    console.log("error fetch");
+                } else {
+                    if (!self.loginView) {
+                        self.loginView = new LoginView();
+                        self.loginView.render();
+                        $('#content').html(self.loginView.el);
+                    }
+                    console.log("hmmm...");
                 }
-            });
-        /*}*/
-        if (!this.loginView) {
-            this.loginView = new LoginView();
-            this.loginView.render();
-        }
-        $('#content').html(this.loginView.el);
+            },
+            error: function(){
+                console.log("error fetch");
+            }
+        });
     },
 
     accounts: function (page) {
@@ -181,7 +178,7 @@ function successFetch(data, self, pages, view){
     console.log("success");
 }
 
-function errorFetch(self){
+function errorFetch(xhr, self){
     console.log("error");
     self.navigate("", {trigger: true});
 }

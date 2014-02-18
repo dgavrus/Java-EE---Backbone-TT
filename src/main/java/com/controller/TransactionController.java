@@ -9,6 +9,9 @@ import com.model.User;
 import com.service.TransactionService;
 import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -55,17 +59,24 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "/rest/transaction", method = RequestMethod.POST)
-    public void transaction(@RequestBody Transaction currentTransaction,
+    public @ResponseBody ResponseEntity transaction(@RequestBody Transaction currentTransaction,
                             HttpServletRequest request,
                             HttpServletResponse response) throws IOException {
         currentTransaction.setSourceAccountId(userService.getAuthenticatedUser().getAccountId());
         currentTransaction.setDate(new Date());
-        transactionService.makeTransaction(currentTransaction);
+        TransactionService.TransactionEnding result = transactionService.makeTransaction(currentTransaction);
+        if(result == TransactionService.TransactionEnding.SUCCESSFUL){
+            return new ResponseEntity<TransactionService.TransactionEnding>(result, HttpStatus.OK);
+        }
+        return new ResponseEntity<TransactionService.TransactionEnding>(result, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(value = "/rest/transaction/pagination", method = RequestMethod.GET)
     public @ResponseBody PaginationInfo pagination(){
         User authenticatedUser = userService.getAuthenticatedUser();
+        if(authenticatedUser == null){
+            throw new BadCredentialsException("You are not authenticated");
+        }
         int pages = (int)Math.ceil(transactionDAOdb.getUserTransactionsCount(authenticatedUser.getAccountId()) / 10.0);
         if(this.pagination == null){
             this.pagination = new PaginationInfo(pages, 1, Math.min(pages, 7), url);

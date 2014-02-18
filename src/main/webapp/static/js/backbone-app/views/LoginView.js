@@ -4,6 +4,7 @@ window.LoginView = Backbone.View.extend({
         $('#usernamediv').html("Hello, sign in please");
         this.render();
         console.log('Initializing Login View');
+        $('#signIn').validationEngine();
     },
 
     render:function () {
@@ -16,11 +17,12 @@ window.LoginView = Backbone.View.extend({
     },
 
     signIn: function(){
+        $('#signIn').validationEngine('hide');
         loginStatus.set({'username':this.$("#j_username").val(),
             'password':this.$("#j_password").val(),
             'loggedIn':false});
         loginStatus.save(null, {
-            success: function(data){
+            success: function(data, response){
                 console.log(data);
                 switch (data.attributes.role){
                     case "Client": location.hash = "#transactions";
@@ -28,9 +30,14 @@ window.LoginView = Backbone.View.extend({
                     case "Employee": location.hash = "#accounts";
                                     break;
                 }
-            },   error: function(){
+            },
+            error: function(data, response){
                 console.log("something wrong");
-                //Properly data of wrong login/password will be here
+                if(response.responseJSON.username == null){
+                    $('#j_username').validationEngine('showPrompt', 'User not found') ;
+                } else if(!response.responseJSON.loggedIn){
+                    $('#j_password').validationEngine('showPrompt', 'Wrong password') ;
+                }
             }
         });
 

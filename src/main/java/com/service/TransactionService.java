@@ -25,28 +25,29 @@ public class TransactionService {
         return current.getMoneyAmount() >= moneyRequired;
     }
 
-    private boolean isNotLockedAndActivated(int accountId1, int accountId2){
-        Account account1 = accountDAOdb.getAccount(accountId1);
-        Account account2 = accountDAOdb.getAccount(accountId2);
-        if(account1.isActive() && account2.isActive()){
-            return true;
-        }
-        return false;
+    private boolean isActive(int accountId){
+        Account account = accountDAOdb.getAccount(accountId);
+        return account.isActive();
     }
 
     private TransactionEnding makeTransaction(int sourceAccountId, int destAccountId,
                                 long moneyAmount) {
 
+        Account source = accountDAOdb.getAccount(sourceAccountId);
+        Account dest = accountDAOdb.getAccount(destAccountId);
+        if(dest == null){
+            return TransactionEnding.DEST_ACCOUNT_NOT_EXISTS;
+        }
         if(moneyAmount <= 0){
             return TransactionEnding.WRONG_MONEY_AMOUNT;
         } else if(!isEnoughMoney(sourceAccountId, moneyAmount)){
             return TransactionEnding.NOT_ENOUGH_MONEY;
-        } else if(!isNotLockedAndActivated(sourceAccountId, destAccountId)){
-            return TransactionEnding.NOT_ACTIVATED;
+        } else if(!source.isActive()){
+            return TransactionEnding.SOURCE_NOT_ACTIVATED;
+        } else if(!dest.isActive()){
+            return TransactionEnding.DEST_NOT_ACTIVATED;
         }
 
-        Account source = accountDAOdb.getAccount(sourceAccountId);
-        Account dest = accountDAOdb.getAccount(destAccountId);
         source.setMoneyAmount(source.getMoneyAmount() - moneyAmount);
         dest.setMoneyAmount(dest.getMoneyAmount() + moneyAmount);
         accountDAOdb.updateAccount(source);
@@ -69,7 +70,9 @@ public class TransactionService {
     public enum TransactionEnding {
         WRONG_MONEY_AMOUNT,
         NOT_ENOUGH_MONEY,
-        NOT_ACTIVATED,
+        SOURCE_NOT_ACTIVATED,
+        DEST_NOT_ACTIVATED,
+        DEST_ACCOUNT_NOT_EXISTS,
         SUCCESSFUL
     }
 

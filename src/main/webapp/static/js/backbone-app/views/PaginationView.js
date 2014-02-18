@@ -42,7 +42,6 @@ window.PaginationView = Backbone.View.extend({
         liClass = current >= pagesCount ? "disabled" : "default";
         pages += "{\"current\":" + current + ",\"pageName\":\"" + pageName + "\",\"liClass\":\"" + liClass + "\",\"pageNumberText\":\"next\",\"pageNumber\":" + (current >= pagesCount ? current : (parseInt(current) + 1)) + "}";
         pages += "]";
-        console.log(pages);
         return $.parseJSON(pages);
     }
 
