@@ -22,7 +22,8 @@ window.TransactionsView = Backbone.View.extend({
 
     events : {
         "click #transactionButton" : "makeTransaction",
-        "change" : "updateUserTransactions"
+        "change" : "updateUserTransactions",
+        "blur #transactionForm": "transactionValidate"
     },
 
     makeTransaction : function() {
@@ -72,6 +73,10 @@ window.TransactionsView = Backbone.View.extend({
                 }
             });
         }
+    },
+
+    transactionValidate: function(){
+        alert('onfocus aga');
     },
 
     username:function(){
