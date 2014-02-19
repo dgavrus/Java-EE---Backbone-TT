@@ -68,12 +68,37 @@ public class TransactionService {
     }
 
     public enum TransactionEnding {
-        WRONG_MONEY_AMOUNT,
-        NOT_ENOUGH_MONEY,
-        SOURCE_NOT_ACTIVATED,
-        DEST_NOT_ACTIVATED,
-        DEST_ACCOUNT_NOT_EXISTS,
-        SUCCESSFUL
+        WRONG_MONEY_AMOUNT {
+            public String message(){
+                return "Money amount should be more than 0";
+            }
+        },
+        NOT_ENOUGH_MONEY {
+            public String message(){
+                return "Money amount is not enough for making transaction";
+            }
+        },
+        SOURCE_NOT_ACTIVATED {
+            public String message(){
+                return "Your account is not activated";
+            }
+        },
+        DEST_NOT_ACTIVATED {
+            public String message(){
+                return "Destination account is not activated";
+            }
+        },
+        DEST_ACCOUNT_NOT_EXISTS {
+            public String message(){
+                return "Destination account is not exists";
+            }
+        },
+        SUCCESSFUL {
+            public String message(){
+                return "Transaction completed";
+            }
+        };
+        public abstract String message();
     }
 
 }

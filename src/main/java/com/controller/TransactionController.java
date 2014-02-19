@@ -3,6 +3,7 @@ package com.controller;
 import com.dao.AccountDAOdb;
 import com.dao.TransactionDAOdb;
 import com.dao.UserDAOdb;
+import com.model.Account;
 import com.model.PaginationInfo;
 import com.model.Transaction;
 import com.model.User;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class TransactionController {
@@ -68,7 +70,7 @@ public class TransactionController {
         if(result == TransactionService.TransactionEnding.SUCCESSFUL){
             return new ResponseEntity<TransactionService.TransactionEnding>(result, HttpStatus.OK);
         }
-        return new ResponseEntity<TransactionService.TransactionEnding>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<String>(result.message(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(value = "/rest/transaction/pagination", method = RequestMethod.GET)
@@ -89,6 +91,41 @@ public class TransactionController {
     @RequestMapping(value = "/rest/transaction/pagination", method = RequestMethod.POST)
     public @ResponseBody void paginationPost(@RequestBody PaginationInfo pagination){
         this.pagination = pagination;
+    }
+
+    @RequestMapping(value = "/rest/transaction/validation", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity formValidation(HttpServletRequest request){
+        Map parameters = request.getParameterMap();
+        if(parameters.containsKey("moneyAmount")){
+            Integer money;
+            money = Integer.parseInt(request.getParameter("moneyAmount"));
+            Account source = accountDAOdb.getAccount(userService.getAuthenticatedUser().getAccountId());
+            if(!source.isActive()){
+                return new ResponseEntity<String>(
+                        TransactionService.TransactionEnding.SOURCE_NOT_ACTIVATED.message(),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            else if(source.getMoneyAmount() < money){
+                return new ResponseEntity<String>(
+                        TransactionService.TransactionEnding.NOT_ENOUGH_MONEY.message(),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else if(parameters.containsKey("destAccId")){
+            Integer destAccId = Integer.parseInt(request.getParameter("destAccId"));
+            Account dest = accountDAOdb.getAccount(destAccId);
+            if(dest != null){
+                if(!dest.isActive()){
+                    return new ResponseEntity<String>(
+                            TransactionService.TransactionEnding.DEST_NOT_ACTIVATED.message(),
+                            HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            } else {
+                return new ResponseEntity<String>(
+                        TransactionService.TransactionEnding.DEST_ACCOUNT_NOT_EXISTS.message(),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity(TransactionService.TransactionEnding.SUCCESSFUL.message(), HttpStatus.OK);
     }
 
     private PaginationInfo pagination;

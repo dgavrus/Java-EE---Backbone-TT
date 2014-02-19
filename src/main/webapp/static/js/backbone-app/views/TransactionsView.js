@@ -7,7 +7,7 @@ window.TransactionsView = Backbone.View.extend({
         loginStatus.on('sync', this.username, this);
         loginStatus.fetch();
         $("#transactionForm").validationEngine();
-
+        $('#transactionForm').validationEngine('attach', {'autoHidePrompt': 'true', 'autoHideDelay': 1000});
     },
 
     render:function () {
@@ -23,7 +23,8 @@ window.TransactionsView = Backbone.View.extend({
     events : {
         "click #transactionButton" : "makeTransaction",
         "change" : "updateUserTransactions",
-        "blur #transactionForm": "transactionValidate"
+        "blur #destAcc": "destAccBlur",
+        "blur #moneyAmount": "moneyAmountBlur"
     },
 
     makeTransaction : function() {
@@ -39,44 +40,32 @@ window.TransactionsView = Backbone.View.extend({
                     self.pagination.paginationParams.fetch({
                         success: function(){
                             self.collection.fetch({
-                                data: $.param({page: self.pagination.paginationParams.attributes.activePage}),
-                                success: function(){
-
-                                },
-                                error: function(){
-                                    alert('error');
-                                }
+                                data: $.param({page: self.pagination.paginationParams.attributes.activePage})
                             });
                         }
                     });
 
                 },
                 error: function(obj, response){
-                    var message;
-                    console.log(response.responseJSON);
-                    console.log(response.responseJSON == "NOT_ACTIVATED")
-                    switch(response.responseJSON){
-                        case "SOURCE_NOT_ACTIVATED":
-                            message = "Your account is not activated";
-                            break;
-                        case "DEST_NOT_ACTIVATED":
-                            message = "Destination account is not activated";
-                            break;
-                        case "NOT_ENOUGH_MONEY":
-                            message = "Money amount is not enough for make transaction";
-                            break;
-                        case "DEST_ACCOUNT_NOT_EXISTS":
-                            message = "Destination account is not exists"
-                            break;
-                    }
+                    var message = response.responseText;
                     $('#transactionForm').validationEngine('showPrompt', message);
                 }
             });
         }
     },
 
-    transactionValidate: function(){
-        alert('onfocus aga');
+    destAccBlur: function(){
+        $("#transactionForm").validationEngine('hide');
+        $('#destAcc').validationEngine();
+        $('#destAcc').validationEngine('attach', {'autoHidePrompt': 'true', 'autoHideDelay': 1000});
+        $('#destAcc').validationEngine('validate');
+    },
+
+    moneyAmountBlur: function(){
+        $('#transactionForm').validationEngine('hide');
+        $('#moneyAmount').validationEngine();
+        $('#moneyAmount').validationEngine('attach', {'autoHidePrompt': 'true', 'autoHideDelay': 1000});
+        $('#moneyAmount').validationEngine('validate');
     },
 
     username:function(){
