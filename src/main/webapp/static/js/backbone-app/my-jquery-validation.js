@@ -1,7 +1,7 @@
 function moneyAmountValidate(field){
     var message;
     if(field.val() <= 0){
-        return "Money amount should be more than 0"
+        return "* Money amount should be more than 0"
     }
     $.ajax({
         url: "/rest/transaction/validation",
@@ -13,7 +13,7 @@ function moneyAmountValidate(field){
 
         },
         error: function(response){
-            message = response.responseText;
+            message = "* " + response.responseText;
             return message;
         }
     });
@@ -35,7 +35,7 @@ function destAccValidate(field){
 
             },
             error: function(response){
-                message = response.responseText;
+                message = "* " + response.responseText;
                 return message;
             }
         });

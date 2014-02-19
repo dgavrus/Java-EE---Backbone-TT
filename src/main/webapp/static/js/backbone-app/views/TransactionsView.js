@@ -44,10 +44,9 @@ window.TransactionsView = Backbone.View.extend({
                             });
                         }
                     });
-
                 },
                 error: function(obj, response){
-                    var message = response.responseText;
+                    var message = "* " + response.responseText;
                     $('#transactionForm').validationEngine('showPrompt', message);
                 }
             });
@@ -57,14 +56,12 @@ window.TransactionsView = Backbone.View.extend({
     destAccBlur: function(){
         $("#transactionForm").validationEngine('hide');
         $('#destAcc').validationEngine();
-        $('#destAcc').validationEngine('attach', {'autoHidePrompt': 'true', 'autoHideDelay': 1000});
         $('#destAcc').validationEngine('validate');
     },
 
     moneyAmountBlur: function(){
         $('#transactionForm').validationEngine('hide');
         $('#moneyAmount').validationEngine();
-        $('#moneyAmount').validationEngine('attach', {'autoHidePrompt': 'true', 'autoHideDelay': 1000});
         $('#moneyAmount').validationEngine('validate');
     },
 

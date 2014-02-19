@@ -13,7 +13,7 @@ window.PaginationView = Backbone.View.extend({
 
     paginationParams: null,
 
-    getPages: function(startPage, lastPage){
+    getPages: function(){
         var sp, lp;
         var pages = "[";
         var current = this.paginationParams.attributes.activePage;
@@ -25,11 +25,7 @@ window.PaginationView = Backbone.View.extend({
         } else if(this.paginationParams.attributes.url === "/rest/userslist/pagination"){
             pageName = "accounts";
         }
-        if(!startPage && !lastPage){
-            sp = 1, lp = pagesForView;
-        } else {
-            sp = startPage, lp = lastPage;
-        }
+        sp = 1, lp = pagesForView;
         if(current > lp && lp < pagesCount){
             sp += current - lp, lp = current;
         }
