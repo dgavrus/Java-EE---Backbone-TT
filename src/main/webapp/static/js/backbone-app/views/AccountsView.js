@@ -16,26 +16,13 @@ window.AccountsView = Backbone.View.extend({
         $("#paginationdiv").html(this.pagination.template());
         var pageTemplate = $.templates("#pageTemplate");
         pageTemplate.link(this.$("#tpagination"), this.pagination.getPages());
+        this.setStatusColor();
         return this;
-
     },
 
     events: {
         "click .btn" : "showDetails"
     },
-
-    /*changeStatus: function(e){
-     e.preventDefault();
-     var status = $(e.target).text();
-     var accountId = e.target.parentNode.id;
-     var currentAccount = this.collection.findWhere({accountNumber: parseInt(accountId)});
-     currentAccount.set({status: status});
-     currentAccount.save(null, {
-     success: function(){
-     this.collection.fetch();
-     }});
-     this.render();
-     },*/
 
     showDetails: function(e){
         e.preventDefault();
@@ -47,6 +34,18 @@ window.AccountsView = Backbone.View.extend({
 
     username:function(){
         $('#usernamediv').html("Hello, " + loginStatus.attributes.username);
-    }
+    },
 
+    setStatusColor:function(){
+        for(i = 0; i < this.collection.length; i++){
+            var item = this.collection.models[i];
+            if(item.attributes.status == 'Active'){
+                $('#status' + item.attributes.accountNumber).css('color','green');
+            } else if(item.attributes.status == 'Blocked'){
+                $('#status' + item.attributes.accountNumber).css('color','red');
+            } else {
+                $('#status' + item.attributes.accountNumber).css('color','blue');
+            }
+        }
+    }
 });

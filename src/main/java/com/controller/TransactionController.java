@@ -110,8 +110,8 @@ public class TransactionController {
                         TransactionService.TransactionEnding.NOT_ENOUGH_MONEY.message(),
                         HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } else if(parameters.containsKey("destAccId")){
-            Integer destAccId = Integer.parseInt(request.getParameter("destAccId"));
+        } else if(parameters.containsKey("destAcc")){
+            Integer destAccId = Integer.parseInt(request.getParameter("destAcc"));
             Account dest = accountDAOdb.getAccount(destAccId);
             if(dest != null){
                 if(!dest.isActive()){

@@ -40,7 +40,21 @@ window.TransactionsView = Backbone.View.extend({
                     self.pagination.paginationParams.fetch({
                         success: function(){
                             self.collection.fetch({
-                                data: $.param({page: self.pagination.paginationParams.attributes.activePage})
+                                data: $.param({page: self.pagination.paginationParams.attributes.activePage}),
+                                success: function(){
+                                    /*window.setTimeout(function(){
+                                        function doIncrement(increment) {
+                                            var w = parseInt(document.getElementById('pb').style.width);
+                                            document.getElementById('pb').style.width= (w + increment) +'%';
+                                        }
+                                        for(var x = 0; x < 200; x++)
+                                        {
+                                            setTimeout(doIncrement(3),2000);
+                                        }
+                                    }, 100);*/
+                                    window.setTimeout(function() { $('#transactionSuccessful').fadeIn(); }, 100);
+                                    window.setTimeout(function() { $('#transactionSuccessful').hide(); }, 3000);
+                                }
                             });
                         }
                     });

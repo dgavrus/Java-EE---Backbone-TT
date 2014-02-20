@@ -8,8 +8,11 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +86,27 @@ public class AccountDAOdbImpl implements AccountDAOdb {
     public void updateAccountStatus(Account account){
         String query = "update accounts set status=\"" + account.getStatus() + "\" where accountNumber=" + account.getAccountNumber();
         jdbcTemplateObject.update(query);
+    }
+
+    public class AccountMapper implements RowMapper<Account> {
+
+        public Account mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Account account = new Account();
+            account.setId(rs.getInt("id"));
+            account.setAccountNumber(rs.getInt("accountNumber"));
+            account.setStatus(statusConverter(rs.getString("status")));
+            account.setMoneyAmount(rs.getLong("moneyAmount"));
+            account.setUserId(rs.getInt("userId"));
+            return account;
+        }
+
+        private Account.Status statusConverter(String status){
+            if(status.equals("New")){
+                return Account.Status.New;
+            } else if(status.equals("Active")){
+                return Account.Status.Active;
+            } else return Account.Status.Blocked;
+        }
     }
 
 }

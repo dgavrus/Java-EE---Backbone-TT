@@ -43,5 +43,6 @@ window.AccountDetailsView = Backbone.View.extend({
             }
         });
         $('#status' + this.account.attributes.accountNumber).html(status);
+        $('#status' + this.account.attributes.accountNumber).css('color', status == 'Active' ? 'green' : 'red');
     }
 });
