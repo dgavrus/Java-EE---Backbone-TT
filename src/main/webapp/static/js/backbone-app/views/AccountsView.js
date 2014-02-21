@@ -21,7 +21,7 @@ window.AccountsView = Backbone.View.extend({
     },
 
     events: {
-        "click .btn" : "showDetails"
+        "click .glyphicon" : "showDetails"
     },
 
     showDetails: function(e){

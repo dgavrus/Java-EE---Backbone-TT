@@ -3,7 +3,7 @@
         Get users
     </div>
     <div id="detailsModal" class="modal">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="left: 0%">
             <div class="modal-content">
                 <div class="modal-body" id="detailsModalBody" style="height: 600px; width: 800px; max-width: 800px">
 
@@ -34,6 +34,6 @@
             <td>{{:accountNumber}}</td>
             <td>{{:ownerFirstName}}</td>
             <td id="status{{:accountNumber}}" width="100px">{{:status}}</td>
-            <td id="{{:accountNumber}}"><div class="btn btn-info" width="20px" style="font-size: 12pt">i</div></td>
+            <td id="{{:accountNumber}}"><a class="glyphicon glyphicon-info-sign" width="20px"></a></td>
         </tr>
 </script>
