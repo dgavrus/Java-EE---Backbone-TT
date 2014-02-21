@@ -20,14 +20,8 @@ public class TransactionService {
     @Autowired
     TransactionDAOdb transactionDAOdb;
 
-    private boolean isEnoughMoney(int accountId, long moneyRequired){
-        Account current = accountDAOdb.getAccount(accountId);
-        return current.getMoneyAmount() >= moneyRequired;
-    }
-
-    private boolean isActive(int accountId){
-        Account account = accountDAOdb.getAccount(accountId);
-        return account.isActive();
+    private boolean isEnoughMoney(Account account, long moneyRequired){
+        return account.getMoneyAmount() >= moneyRequired;
     }
 
     private TransactionEnding makeTransaction(int sourceAccountId, int destAccountId,
@@ -40,7 +34,7 @@ public class TransactionService {
         }
         if(moneyAmount <= 0){
             return TransactionEnding.WRONG_MONEY_AMOUNT;
-        } else if(!isEnoughMoney(sourceAccountId, moneyAmount)){
+        } else if(!isEnoughMoney(source, moneyAmount)){
             return TransactionEnding.NOT_ENOUGH_MONEY;
         } else if(!source.isActive()){
             return TransactionEnding.SOURCE_NOT_ACTIVATED;
