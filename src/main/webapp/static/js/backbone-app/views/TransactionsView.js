@@ -17,6 +17,7 @@ window.TransactionsView = Backbone.View.extend({
         $("#paginationdiv").html(this.pagination.template());
         var pageTemplate = $.templates("#pageTemplate");
         pageTemplate.link(this.$("#tpagination"), this.pagination.getPages());
+        this.pagination.addPaginationAttributes();
         return this;
     },
 
@@ -42,16 +43,6 @@ window.TransactionsView = Backbone.View.extend({
                             self.collection.fetch({
                                 data: $.param({page: self.pagination.paginationParams.attributes.activePage}),
                                 success: function(){
-                                    /*window.setTimeout(function(){
-                                        function doIncrement(increment) {
-                                            var w = parseInt(document.getElementById('pb').style.width);
-                                            document.getElementById('pb').style.width= (w + increment) +'%';
-                                        }
-                                        for(var x = 0; x < 200; x++)
-                                        {
-                                            setTimeout(doIncrement(3),2000);
-                                        }
-                                    }, 100);*/
                                     window.setTimeout(function() { $('#transactionSuccessful').fadeIn(); }, 100);
                                     window.setTimeout(function() { $('#transactionSuccessful').hide(); }, 3000);
                                 }
@@ -60,7 +51,11 @@ window.TransactionsView = Backbone.View.extend({
                     });
                 },
                 error: function(obj, response){
-                    var message = "* " + response.responseText;
+                    var messages = response.responseJSON;
+                    var message = "";
+                    for(i = 0; i < messages.length; i++){
+                        message += messages[i] + "<br>";
+                    }
                     $('#transactionForm').validationEngine('showPrompt', message);
                 }
             });

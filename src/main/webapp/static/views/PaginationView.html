@@ -1,15 +1,13 @@
-<ul class="pagination center-block" id="tpagination">
+<ul class="pagination">
+    <li id="liPrev"><a id="aPrev">prev</a></li>
+</ul>
+<ul class="pagination" id="tpagination">
 
+</ul>
+<ul class="pagination">
+    <li id="liNext"><a id="aNext">next</a></li>
 </ul>
 
 <script id="pageTemplate" type="text/x-jsrender">
-    <li class="{{:liClass}}"><a href="#{{:pageName}}/page/{{:pageNumber}}">{{:pageNumberText}}</a></li>
-</script>
-
-<!--<script id="pageTemplate" type="text/x-jsrender">
-    <li class="{{:liClass}}"><a href="#{{:pageName}}/page/{{:pageNumber}}">{{:pageNumberText}}</a></li>
-</script>-->
-
-<script>
-    $('.pagination .disabled a').attr("href", location.href);
+    {{for page}}<li id="liPage{{:pageNumber}}" class="pagination"><a id="aPage{{:pageNumber}}">{{:pageNumber}}</a></li>{{/for}}
 </script>

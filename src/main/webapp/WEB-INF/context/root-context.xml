@@ -41,4 +41,6 @@
         <property name="jdbcTemplate" ref="jdbcTemplateObject" />
     </bean>
 
+    <bean id="transactionValidator" class="com.validator.TransactionValidator"/>
+
 </beans>

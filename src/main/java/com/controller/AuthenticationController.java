@@ -2,20 +2,25 @@ package com.controller;
 
 import com.dao.UserDAOdb;
 import com.dao.UserDAOdbImpl;
+import com.model.Transaction;
 import com.model.User;
 import com.security.CustomAuthenticationProvider;
 import com.model.LoginStatus;
 import com.service.UserService;
+import com.validator.TransactionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.Enumeration;
 
 @Controller
@@ -29,6 +34,9 @@ public class AuthenticationController {
 
     @Autowired
     CustomAuthenticationProvider customAuthenticationProvider;
+
+    @Autowired
+    TransactionValidator transactionValidator;
 
     @RequestMapping(value = "/")
     public String homepage1(){

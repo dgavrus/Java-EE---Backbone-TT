@@ -13,9 +13,30 @@ window.PaginationView = Backbone.View.extend({
 
     paginationParams: null,
 
+
     getPages: function(){
         var sp, lp;
-        var pages = "[";
+        var current = this.paginationParams.attributes.activePage;
+        var pagesForView = this.paginationParams.attributes.pagesForView;
+        var pagesCount = this.paginationParams.attributes.pagesCount;
+        var pages = new Array();
+        sp = Math.max(current - Math.floor(pagesForView / 2), 1);
+        lp = Math.min(sp + pagesForView - 1, pagesCount);
+        if(lp == pagesCount){
+            sp = lp - (pagesForView - 1);
+        }
+        if(parseInt(current) > lp && lp < parseInt(pagesCount)){
+            sp += current - lp, lp = current;
+        }
+        for(var k = 0, pageNumber = sp; pageNumber <= lp; pageNumber++, k++){
+            pages[k] = {};
+            pages[k].page = {pageNumber: pageNumber};
+        }
+        return $.parseJSON(JSON.stringify(pages));
+    },
+
+    addPaginationAttributes:function(){
+        var sp, lp;
         var current = this.paginationParams.attributes.activePage;
         var pagesForView = this.paginationParams.attributes.pagesForView;
         var pagesCount = this.paginationParams.attributes.pagesCount;
@@ -25,20 +46,21 @@ window.PaginationView = Backbone.View.extend({
         } else if(this.paginationParams.attributes.url === "/rest/userslist/pagination"){
             pageName = "accounts";
         }
-        sp = 1, lp = pagesForView;
-        if(current > lp && lp < pagesCount){
-            sp += current - lp, lp = current;
+        var hrefPrefix = "#" + pageName + "/page/";
+        sp = Math.max(current - Math.floor(pagesForView / 2), 1);
+        lp = Math.min(sp + pagesForView - 1, pagesCount);
+        if(lp == pagesCount){
+            sp = lp - (pagesForView - 1);
         }
-        var liClass = current <= 1 ? "disabled" : "default";
-        pages += "{\"pageName\":\"" + pageName + "\",\"liClass\":\"" + liClass + "\",\"pageNumberText\":\"prev\",\"pageNumber\":" + (current <= 1 ? current : (parseInt(current) - 1)) + "},";
-        for(var i = sp; i <= lp; i++){
-            liClass = current == i ? "active" : "default";
-            pages += "{\"current\":" + current + ",\"pageName\":\"" + pageName + "\",\"liClass\":\"" + liClass + "\",\"pageNumberText\":" + i + ",\"pageNumber\":" + i +"},";
+        for(var pageNumber = sp; pageNumber <= lp; pageNumber++){
+            console.log($("#aPage" + pageNumber));
+            $("#aPage" + pageNumber).attr("href", hrefPrefix + pageNumber);
         }
-        liClass = current >= pagesCount ? "disabled" : "default";
-        pages += "{\"current\":" + current + ",\"pageName\":\"" + pageName + "\",\"liClass\":\"" + liClass + "\",\"pageNumberText\":\"next\",\"pageNumber\":" + (current >= pagesCount ? current : (parseInt(current) + 1)) + "}";
-        pages += "]";
-        return $.parseJSON(pages);
+        $("#liPage" + current).addClass("active");
+        $("#liPrev").addClass(current <= 1 ? "disabled" : "default");
+        $("#aPrev").attr("href", hrefPrefix + (current <= 1 ? 1 : current - 1));
+        $("#liNext").addClass(current >= pagesCount ? "disabled" : "default");
+        $("#aNext").attr("href", hrefPrefix + (current >= pagesCount ? pagesCount : parseInt(current) + 1));
     }
 
 });

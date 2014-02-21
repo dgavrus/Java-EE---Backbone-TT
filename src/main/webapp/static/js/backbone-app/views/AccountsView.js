@@ -16,6 +16,7 @@ window.AccountsView = Backbone.View.extend({
         $("#paginationdiv").html(this.pagination.template());
         var pageTemplate = $.templates("#pageTemplate");
         pageTemplate.link(this.$("#tpagination"), this.pagination.getPages());
+        this.pagination.addPaginationAttributes();
         this.setStatusColor();
         return this;
     },
