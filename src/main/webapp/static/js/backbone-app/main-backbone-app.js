@@ -78,7 +78,12 @@ window.Router = Backbone.Router.extend({
             page = 1;
         }
         var pages = new PaginationInfo({url:"rest/userslist/pagination"});
+        pages.set({pagesForView:7,rowsPerPage:10});
         pages.fetch({
+            data:{
+                pagesForView:pages.attributes.pagesForView,
+                rowsPerPage:pages.attributes.rowsPerPage
+            },
             success: function(){
                 if(!isValidPage(self, page, pages)){
                     page = pages.attributes.activePage;
@@ -118,7 +123,12 @@ window.Router = Backbone.Router.extend({
             page = 1;
         }
         var pages = new PaginationInfo({url:"rest/transaction/pagination"});
+        pages.set({pagesForView:7,rowsPerPage:10});
         pages.fetch({
+            data: {
+                pagesForView:pages.attributes.pagesForView,
+                rowsPerPage:pages.attributes.rowsPerPage
+            },
             success: function(){
                 if(!isValidPage(self, page, pages)){
                     page = pages.attributes.activePage;

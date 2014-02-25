@@ -19,6 +19,7 @@
 <script src="/static/js/backbone-app/lib/backbone-min.js"></script>
 <script src="/static/jquery-validation-engine/js/languages/jquery.validationEngine-en.js" type="text/javascript"></script>
 <script src="/static/jquery-validation-engine/js/jquery.validationEngine.js" type="text/javascript"></script>
+<script src="/static/js/backbone-app/lib/jsrender-range.js"></script>
 
 <div class="navbar">
     <h3>

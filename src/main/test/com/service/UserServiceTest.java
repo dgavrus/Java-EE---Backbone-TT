@@ -32,13 +32,23 @@ public class UserServiceTest {
 
     @Test
     public void getAuthenticatedUser(){
-        final User user = new User(1,"111","222","333","444",2);
+        final User user = new User(1,"111","222","333","444",2, User.Role.Employee);
         context.checking(new Expectations(){{
 
             oneOf(userDAOdb).getUserByLogin("111");
             will(returnValue(user));
         }});
         Assert.assertEquals(userService.getAuthenticatedUser(), user);
+    }
+
+    @Test
+    public void authenticatedUserRoleTest(){
+        final User user = new User(1,"111","222","333","444",2, User.Role.Employee);
+        context.checking(new Expectations(){{
+            oneOf(userDAOdb).getUserByLogin("111");
+            will(returnValue(user));
+        }});
+        Assert.assertFalse("This user has other role", userService.getAuthenticatedUser().getAuthority().equals(User.Role.Client));
     }
 
 }

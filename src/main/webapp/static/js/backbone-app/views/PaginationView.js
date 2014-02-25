@@ -19,7 +19,7 @@ window.PaginationView = Backbone.View.extend({
         var current = this.paginationParams.attributes.activePage;
         var pagesForView = this.paginationParams.attributes.pagesForView;
         var pagesCount = this.paginationParams.attributes.pagesCount;
-        var pages = new Array();
+        var pages;
         sp = Math.max(current - Math.floor(pagesForView / 2), 1);
         lp = Math.min(sp + pagesForView - 1, pagesCount);
         if(lp == pagesCount){
@@ -28,10 +28,7 @@ window.PaginationView = Backbone.View.extend({
         if(parseInt(current) > lp && lp < parseInt(pagesCount)){
             sp += current - lp, lp = current;
         }
-        for(var k = 0, pageNumber = sp; pageNumber <= lp; pageNumber++, k++){
-            pages[k] = {};
-            pages[k].page = {pageNumber: pageNumber};
-        }
+        pages = {sp: sp, lp: lp};
         return $.parseJSON(JSON.stringify(pages));
     },
 

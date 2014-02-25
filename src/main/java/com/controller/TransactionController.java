@@ -7,6 +7,8 @@ import com.model.Account;
 import com.model.PaginationInfo;
 import com.model.Transaction;
 import com.model.User;
+import com.service.AccountService;
+import com.service.PaginationService;
 import com.service.TransactionService;
 import com.service.UserService;
 import com.validator.TransactionValidator;
@@ -33,13 +35,10 @@ public class TransactionController {
     private final String url = "/rest/transaction/pagination";
 
     @Autowired
-    UserDAOdb userDAOdb;
+    AccountService accountService;
 
     @Autowired
-    AccountDAOdb accountDAOdb;
-
-    @Autowired
-    TransactionDAOdb transactionDAOdb;
+    PaginationService paginationService;
 
     @Autowired
     TransactionService transactionService;
@@ -58,9 +57,9 @@ public class TransactionController {
         try {
             pageNumber = Integer.parseInt(request.getParameter("page"));
         } catch (NumberFormatException e){
-            return transactionDAOdb.userTransactionList(authenticatedUser.getAccountId(), 1, 10);
+            return transactionService.userTransactionList(authenticatedUser.getAccountId(), 1, pagination.getRowsPerPage());
         }
-        return transactionDAOdb.userTransactionList(authenticatedUser.getAccountId(), pageNumber, 10);
+        return transactionService.userTransactionList(authenticatedUser.getAccountId(), pageNumber, pagination.getRowsPerPage());
     }
 
     @RequestMapping(value = "/rest/transaction", method = RequestMethod.POST)
@@ -80,17 +79,30 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "/rest/transaction/pagination", method = RequestMethod.GET)
-    public @ResponseBody PaginationInfo pagination(){
+    public @ResponseBody PaginationInfo pagination(HttpServletRequest request){
+        int rowsPerPage;
+        int pagesForView;
+        try {
+            rowsPerPage = Integer.parseInt(request.getParameter("rowsPerPage"));
+        } catch (NumberFormatException e){
+            rowsPerPage = paginationService.DEFAULT_ROWS_PER_PAGE;
+        }
+        try {
+            pagesForView = Integer.parseInt(request.getParameter("pagesForView"));
+        } catch (NumberFormatException e){
+            pagesForView = paginationService.MAX_PAGES;
+        }
         User authenticatedUser = userService.getAuthenticatedUser();
         if(authenticatedUser == null){
             throw new BadCredentialsException("You are not authenticated");
         }
-        int pages = (int)Math.ceil(transactionDAOdb.getUserTransactionsCount(authenticatedUser.getAccountId()) / 10.0);
+        int pages = (int)Math.ceil(paginationService.getUserTransactionsCount(authenticatedUser.getAccountId()) / (float)rowsPerPage);
         if(this.pagination == null){
-            this.pagination = new PaginationInfo(pages, 1, Math.min(pages, 7), url);
+            this.pagination = new PaginationInfo(pages, 1, Math.min(Math.min(pages, pagesForView), paginationService.MAX_PAGES), rowsPerPage, url);
         }
-        this.pagination.setPagesForView(Math.min(pages, 7));
+        this.pagination.setPagesForView(Math.min(Math.min(pages, pagesForView), paginationService.MAX_PAGES));
         this.pagination.setPagesCount(pages);
+        this.pagination.setRowsPerPage(rowsPerPage);
         return this.pagination;
     }
 
@@ -105,7 +117,7 @@ public class TransactionController {
         if(parameters.containsKey("moneyAmount")){
             Integer money;
             money = Integer.parseInt(request.getParameter("moneyAmount"));
-            Account source = accountDAOdb.getAccount(userService.getAuthenticatedUser().getAccountId());
+            Account source = accountService.getAccount(userService.getAuthenticatedUser().getAccountId());
             if(!source.isActive()){
                 return new ResponseEntity<String>(
                         TransactionService.TransactionStatus.SOURCE_NOT_ACTIVATED.message(),
@@ -118,7 +130,7 @@ public class TransactionController {
             }
         } else if(parameters.containsKey("destAcc")){
             Integer destAccId = Integer.parseInt(request.getParameter("destAcc"));
-            Account dest = accountDAOdb.getAccount(destAccId);
+            Account dest = accountService.getAccount(destAccId);
             if(dest != null){
                 if(!dest.isActive()){
                     return new ResponseEntity<String>(

@@ -1,13 +1,15 @@
-<ul class="pagination">
+<ul class="pagination center-block">
     <li id="liPrev"><a id="aPrev">prev</a></li>
 </ul>
-<ul class="pagination" id="tpagination">
+
+<ul class="pagination center-block" id="tpagination">
 
 </ul>
-<ul class="pagination">
+
+<ul class="pagination center-block">
     <li id="liNext"><a id="aNext">next</a></li>
 </ul>
 
 <script id="pageTemplate" type="text/x-jsrender">
-    {{for page}}<li id="liPage{{:pageNumber}}" class="pagination"><a id="aPage{{:pageNumber}}">{{:pageNumber}}</a></li>{{/for}}
+    {{range start=sp end=lp}}<li id="liPage{{:#data}}" class="pagination"><a id="aPage{{:#data}}">{{:#data}}</a></li>{{/range}}
 </script>

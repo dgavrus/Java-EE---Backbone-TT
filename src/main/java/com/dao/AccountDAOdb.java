@@ -16,9 +16,9 @@ public interface AccountDAOdb {
 
     public List<Account> listAccounts();
 
-    public List<Account> listAccounts(int page);
+    public List<Account> listAccounts(int page, int count);
 
-    public List<ClientAccount> listClientAccounts(int page);
+    public List<ClientAccount> listClientAccounts(int page, int count);
 
     public Integer getAccountsCount();
 

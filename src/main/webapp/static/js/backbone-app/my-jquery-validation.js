@@ -17,7 +17,7 @@ function transactionFormValidate(field){
 
             },
             error: function(response){
-                message = "* " + response.responseText;
+                message = response.responseText;
             }
         });
     }

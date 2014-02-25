@@ -54,7 +54,8 @@ var PaginationInfo = Backbone.Model.extend({
     defaults:{
         pagesCount: null,
         activePage: null,
-        pagesForView: null
+        pagesForView: null,
+        rowsPerPage: null
     },
 
     url: function(){

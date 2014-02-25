@@ -9,6 +9,7 @@ import org.jmock.Expectations;
 import static org.junit.Assert.*;
 
 import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,13 +30,8 @@ public class TransactionServiceTest {
 
         transactionDAOdb = context.mock(TransactionDAOdb.class);
         accountDAOdb = context.mock(AccountDAOdb.class);
-        Field f1 = transactionService.getClass().getDeclaredField("accountDAOdb");
-        f1.setAccessible(true);
-        f1.set(transactionService, accountDAOdb);
-
-        Field f2 = transactionService.getClass().getDeclaredField("transactionDAOdb");
-        f2.setAccessible(true);
-        f2.set(transactionService, transactionDAOdb);
+        transactionService.setAccountDAOdb(accountDAOdb);
+        transactionService.setTransactionDAOdb(transactionDAOdb);
     }
 
     @Test
@@ -88,6 +84,7 @@ public class TransactionServiceTest {
         assertEquals(TransactionService.TransactionStatus.SOURCE_NOT_ACTIVATED, transactionService.makeTransaction(t12));
     }
     @Test
+
     public void newDest() throws Exception {
         final Transaction t12 = new Transaction(1,2,5,new Date());
         context.checking(new Expectations() {{
@@ -100,5 +97,20 @@ public class TransactionServiceTest {
         }});
         assertEquals(TransactionService.TransactionStatus.DEST_NOT_ACTIVATED, transactionService.makeTransaction(t12));
     }
+
+    @Test
+    public void wrongMoneyFalseTest() {
+        final Transaction t12 = new Transaction(1,2,1,new Date());
+        context.checking(new Expectations() {{
+            Account source = new Account(1, 1, 1, 1, Account.Status.Active);
+            Account dest = new Account(2, 0, 2, 2, Account.Status.New);
+            oneOf(accountDAOdb).getAccount(1);
+            will(returnValue(source));
+            oneOf(accountDAOdb).getAccount(2);
+            will(returnValue(dest));
+        }});
+        assertFalse("This account has enough money", transactionService.makeTransaction(t12).equals(TransactionService.TransactionStatus.WRONG_MONEY_AMOUNT));
+    }
+
 
 }

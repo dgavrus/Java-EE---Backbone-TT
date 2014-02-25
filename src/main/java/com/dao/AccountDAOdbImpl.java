@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Repository
@@ -41,7 +42,7 @@ public class AccountDAOdbImpl implements AccountDAOdb {
 
     public List<Account> listAccounts(){
         String query = "select * from accounts";
-        return (ArrayList<Account>) jdbcTemplateObject.query(query, new AccountMapper());
+        return jdbcTemplateObject.query(query, new AccountMapper());
     }
 
     public Integer getAccountsCount() {
@@ -50,15 +51,16 @@ public class AccountDAOdbImpl implements AccountDAOdb {
         return rowsCount;
     }
 
-    public List<Account> listAccounts(int page) {
-        String query = "select * from accounts limit " + ((page - 1) * 10) + ", 10";
+    public List<Account> listAccounts(int page, int count) {
+        String query = "select * from accounts limit " + ((page - 1) * count) + "," + count;
         List<Account> accountList = jdbcTemplateObject.query(query, new AccountMapper());
+        Class classs = accountList.getClass();
         return accountList;
     }
 
-    public List<ClientAccount> listClientAccounts(int page) {
+    public List<ClientAccount> listClientAccounts(int page, int count) {
         List<ClientAccount> clientAccountList = new ArrayList<ClientAccount>();
-        for(Account account : listAccounts(page)){
+        for(Account account : listAccounts(page, count)){
             String fn = userDAOdb.getFirstNameById(account.getUserId());
             String ln = userDAOdb.getLastNameById(account.getUserId());
             clientAccountList.add(new ClientAccount(account, fn, ln));

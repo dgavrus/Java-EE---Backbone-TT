@@ -10,7 +10,7 @@ import java.util.Collection;
 public class User implements GrantedAuthority {
 
     public User(int id, String login, String firstName,
-                String lastName, String password, int accountId){
+                String lastName, String password, int accountId, Role role){
         this.id = id;
         this.login = login;
         this.firstName = firstName;

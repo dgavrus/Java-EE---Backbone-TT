@@ -31,7 +31,7 @@ public class TransactionDAOdbImpl implements TransactionDAOdb {
         return transactionList;
     }
 
-    public List<Transaction> userTransactionList(int accountId, int count) {
+    public List<Transaction> userTransactionListDesc(int accountId, int count) {
         String query = "select * from transactions where source = ? or dest = ? " + "order by id desc limit " + count;
         List<Transaction> transactionList = jdbcTemplateObject.query(
                 query, new Object[]{accountId, accountId}, new TransactionMapper());

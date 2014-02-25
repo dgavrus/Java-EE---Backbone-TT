@@ -8,15 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class TransactionService {
 
     @Autowired
-    protected AccountDAOdb accountDAOdb;
+    private AccountDAOdb accountDAOdb;
 
     @Autowired
-    TransactionDAOdb transactionDAOdb;
+    private TransactionDAOdb transactionDAOdb;
 
     private boolean isEnoughMoney(Account account, long moneyRequired){
         return account.getMoneyAmount() >= moneyRequired;
@@ -57,6 +58,14 @@ public class TransactionService {
         return makeTransaction(sourceAccountId, destAccountId, moneyAmount);
     }
 
+    public List<Transaction> userTransactionList(int accountId, int page, int count){
+        return transactionDAOdb.userTransactionList(accountId, page, count);
+    }
+
+    public List<Transaction> userTransactionListDesc(int accountId, int count){
+        return transactionDAOdb.userTransactionListDesc(accountId, count);
+    }
+
     public enum TransactionStatus {
         WRONG_MONEY_AMOUNT {
             public String message(){
@@ -89,6 +98,14 @@ public class TransactionService {
             }
         };
         public abstract String message();
+    }
+
+    public void setTransactionDAOdb(TransactionDAOdb transactionDAOdb){
+        this.transactionDAOdb = transactionDAOdb;
+    }
+
+    public void setAccountDAOdb(AccountDAOdb accountDAOdb){
+        this.accountDAOdb = accountDAOdb;
     }
 
 }

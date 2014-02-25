@@ -27,9 +27,6 @@ import java.util.Enumeration;
 public class AuthenticationController {
 
     @Autowired
-    UserDAOdb userDAOdb;
-
-    @Autowired
     UserService userService;
 
     @Autowired

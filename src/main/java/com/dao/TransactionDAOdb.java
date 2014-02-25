@@ -15,7 +15,7 @@ public interface TransactionDAOdb {
 
     public List<Transaction> userTransactionList(int accountId, int page, int count);
 
-    public List<Transaction> userTransactionList(int accountId, int count);
+    public List<Transaction> userTransactionListDesc(int accountId, int count);
 
     public int getUserTransactionsCount(int accountId);
 
