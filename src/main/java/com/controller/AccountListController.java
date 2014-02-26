@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -45,31 +46,10 @@ public class AccountListController {
 
     @RequestMapping(value = "/rest/userslist/pagination", method = RequestMethod.GET)
     public @ResponseBody PaginationInfo pagination(HttpServletRequest request){
-        int rowsPerPage;
-        int pagesForView;
-        try {
-            rowsPerPage = Integer.parseInt(request.getParameter("rowsPerPage"));
-            if(rowsPerPage < 1){
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException e){
-            rowsPerPage = paginationService.DEFAULT_ROWS_PER_PAGE;
-        }
-        try {
-            pagesForView = Integer.parseInt(request.getParameter("pagesForView"));
-            if(pagesForView < 1){
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException e){
-            pagesForView = paginationService.MAX_PAGES;
-        }
-        int pages = (int)Math.ceil(accountService.getAccountsCount() / (float)rowsPerPage);
-        if(this.pagination == null){
-            this.pagination = new PaginationInfo(pages, 1, Math.min(Math.min(pages, pagesForView), paginationService.MAX_PAGES), rowsPerPage, url);
-        }
-        this.pagination.setPagesForView(Math.min(Math.min(pages, pagesForView), paginationService.MAX_PAGES));
-        this.pagination.setPagesCount(pages);
-        this.pagination.setRowsPerPage(rowsPerPage);
+        HashMap<String, Integer> paginationParams = paginationService.parsePaginationParams(request);
+        int rowsPerPage = paginationParams.get(paginationService.ROWS_PER_PAGE_PARAM);
+        int pagesForView = paginationParams.get(paginationService.PAGES_FOR_VIEW_PARAM);
+        this.pagination = paginationService.updatePagination(pagination, rowsPerPage, pagesForView, url);
         return this.pagination;
     }
 
