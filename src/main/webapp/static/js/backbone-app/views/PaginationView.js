@@ -58,6 +58,10 @@ window.PaginationView = Backbone.View.extend({
         $("#aPrev").attr("href", hrefPrefix + (current <= 1 ? 1 : current - 1));
         $("#liNext").addClass(current >= pagesCount ? "disabled" : "default");
         $("#aNext").attr("href", hrefPrefix + (current >= pagesCount ? pagesCount : parseInt(current) + 1));
+        $("#liFirst").addClass(current <= 1 ? "disabled" : "default");
+        $("#liLast").addClass(current >= pagesCount ? "disabled" : "default");
+        $("#aFirst").attr("href", hrefPrefix + 1);
+        $("#aLast").attr("href", hrefPrefix + pagesCount);
     }
 
 });
