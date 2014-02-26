@@ -11,8 +11,8 @@
         <!--<logout logout-url="/rest/login" />-->
         <intercept-url pattern="/page" access="permitAll"/>
         <intercept-url pattern="/rest/login" access="permitAll"/>
-        <intercept-url pattern="/rest/transaction" access="hasRole('Client')"/>
-        <intercept-url pattern="/rest/userslist" access="hasRole('Employee')"/>
+        <intercept-url pattern="/rest/transaction/**" access="hasRole('Client')"/>
+        <intercept-url pattern="/rest/userslist/**" access="hasRole('Employee')"/>
         <intercept-url pattern="/*" access="isAuthenticated()"/>
     </http>
 

@@ -5,6 +5,7 @@ import com.dao.TransactionDAOdb;
 import com.model.Account;
 import com.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,6 +24,7 @@ public class TransactionService {
         return account.getMoneyAmount() >= moneyRequired;
     }
 
+    @Secured("Client")
     private TransactionStatus makeTransaction(int sourceAccountId, int destAccountId,
                                 long moneyAmount) {
 
@@ -51,6 +53,7 @@ public class TransactionService {
         return TransactionStatus.SUCCESSFUL;
     }
 
+    @Secured("Client")
     public TransactionStatus makeTransaction(Transaction transaction) {
         long moneyAmount = transaction.getMoneyAmount();
         int sourceAccountId = transaction.getSourceAccountId();

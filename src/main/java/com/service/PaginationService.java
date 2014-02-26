@@ -5,7 +5,6 @@ import com.model.PaginationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +47,7 @@ public class PaginationService {
             if(rowsPerPage < 1){
                 throw new NumberFormatException();
             }
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException | NullPointerException e){
             rowsPerPage = DEFAULT_ROWS_PER_PAGE;
         }
         try {
@@ -56,7 +55,7 @@ public class PaginationService {
             if(pagesForView < 1){
                 throw new NumberFormatException();
             }
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException | NullPointerException e){
             pagesForView = MAX_PAGES;
         }
         HashMap<String, Integer> result = new HashMap<String, Integer>();

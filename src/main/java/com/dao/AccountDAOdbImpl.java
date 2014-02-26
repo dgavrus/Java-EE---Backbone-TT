@@ -53,18 +53,15 @@ public class AccountDAOdbImpl implements AccountDAOdb {
     public List<Account> listAccounts(int page, int count) {
         String query = "select * from accounts limit " + ((page - 1) * count) + "," + count;
         List<Account> accountList = jdbcTemplateObject.query(query, new AccountMapper());
-        Class classs = accountList.getClass();
         return accountList;
     }
 
     public List<ClientAccount> listClientAccounts(int page, int count) {
-        List<ClientAccount> clientAccountList = new ArrayList<ClientAccount>();
-        for(Account account : listAccounts(page, count)){
-            String fn = userDAOdb.getFirstNameById(account.getUserId());
-            String ln = userDAOdb.getLastNameById(account.getUserId());
-            clientAccountList.add(new ClientAccount(account, fn, ln));
-        }
-        return clientAccountList;
+        String query = "select a.*, u.firstname, u.lastname from accounts as a " +
+                "inner join users as u on a.accountNumber=u.accountid " +
+                "limit " + ((page - 1) * count) + "," + count;
+        List<ClientAccount> clientAccountsList = jdbcTemplateObject.query(query, new ClientAccountMapper());
+        return clientAccountsList;
     }
 
     public void updateAccount(Account account){
@@ -109,5 +106,15 @@ public class AccountDAOdbImpl implements AccountDAOdb {
             } else return Account.Status.Blocked;
         }
     }
+
+    public class ClientAccountMapper implements RowMapper<ClientAccount> {
+
+        public ClientAccount mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ClientAccount account = new ClientAccount(new AccountMapper().mapRow(rs, rowNum),
+                    rs.getString("firstname"), rs.getString("lastname"));
+            return account;
+        }
+    }
+
 
 }

@@ -39,6 +39,10 @@ window.TransactionsView = Backbone.View.extend({
             currentTransaction.save(null, {
                 success: function(obj, response){
                     self.pagination.paginationParams.fetch({
+                        data:{
+                            pagesForView:self.pagination.paginationParams.attributes.pagesForView,
+                            rowsPerPage:self.pagination.paginationParams.attributes.rowsPerPage
+                        },
                         success: function(){
                             self.collection.fetch({
                                 data: $.param({page: self.pagination.paginationParams.attributes.activePage}),
