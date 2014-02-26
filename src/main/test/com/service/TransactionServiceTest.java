@@ -9,12 +9,10 @@ import org.jmock.Expectations;
 import static org.junit.Assert.*;
 
 import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.util.Date;
 
 public class TransactionServiceTest {

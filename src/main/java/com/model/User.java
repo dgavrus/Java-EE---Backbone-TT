@@ -2,10 +2,6 @@ package com.model;
 
 import org.json.JSONObject;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class User implements GrantedAuthority {
 

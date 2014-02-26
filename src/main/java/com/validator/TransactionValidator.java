@@ -1,10 +1,7 @@
 package com.validator;
 
-import com.dao.AccountDAOdb;
-import com.model.Account;
 import com.model.Transaction;
 import com.service.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 

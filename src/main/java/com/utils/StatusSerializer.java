@@ -8,8 +8,6 @@ import com.model.Account;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Component
 public class StatusSerializer extends JsonSerializer<Account.Status> {

@@ -1,13 +1,8 @@
 package com.dao;
 
 import com.model.Transaction;
-import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 
 public interface TransactionDAOdb {
 

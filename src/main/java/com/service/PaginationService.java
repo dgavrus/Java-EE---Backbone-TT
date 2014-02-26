@@ -3,11 +3,11 @@ package com.service;
 import com.dao.TransactionDAOdb;
 import com.model.PaginationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class PaginationService {
@@ -40,11 +40,11 @@ public class PaginationService {
         return transactionDAOdb.getUserTransactionsCount(accountId);
     }
 
-    public HashMap<String, Integer> parsePaginationParams(HttpServletRequest request){
+    public HashMap<String, Integer> parsePaginationParams(Map<String, String[]> parameters){
         int rowsPerPage;
         int pagesForView;
         try {
-            rowsPerPage = Integer.parseInt(request.getParameter(ROWS_PER_PAGE_PARAM));
+            rowsPerPage = Integer.parseInt(parameters.get(ROWS_PER_PAGE_PARAM)[0]);
             if(rowsPerPage < 1){
                 throw new NumberFormatException();
             }
@@ -52,7 +52,7 @@ public class PaginationService {
             rowsPerPage = DEFAULT_ROWS_PER_PAGE;
         }
         try {
-            pagesForView = Integer.parseInt(request.getParameter(PAGES_FOR_VIEW_PARAM));
+            pagesForView = Integer.parseInt(parameters.get(PAGES_FOR_VIEW_PARAM)[0]);
             if(pagesForView < 1){
                 throw new NumberFormatException();
             }

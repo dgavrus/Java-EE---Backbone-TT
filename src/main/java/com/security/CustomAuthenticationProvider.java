@@ -1,11 +1,9 @@
 package com.security;
 
 import com.dao.UserDAOdb;
-import com.dao.UserDAOdbImpl;
 import com.model.LoginStatus;
 import com.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

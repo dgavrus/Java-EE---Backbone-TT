@@ -4,8 +4,6 @@ import com.model.Account;
 import com.model.ClientAccount;
 import org.json.JSONArray;
 
-import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface AccountDAOdb {

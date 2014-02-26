@@ -1,7 +1,9 @@
 package com.controller;
 
-import com.dao.*;
-import com.model.*;
+import com.model.Account;
+import com.model.ClientAccount;
+import com.model.PaginationInfo;
+import com.model.Transaction;
 import com.service.AccountService;
 import com.service.PaginationService;
 import com.service.TransactionService;
@@ -9,11 +11,16 @@ import com.service.UserService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class AccountListController {
@@ -46,7 +53,8 @@ public class AccountListController {
 
     @RequestMapping(value = "/rest/userslist/pagination", method = RequestMethod.GET)
     public @ResponseBody PaginationInfo pagination(HttpServletRequest request){
-        HashMap<String, Integer> paginationParams = paginationService.parsePaginationParams(request);
+        Map parameters = request.getParameterMap();
+        HashMap<String, Integer> paginationParams = paginationService.parsePaginationParams(parameters);
         int rowsPerPage = paginationParams.get(paginationService.ROWS_PER_PAGE_PARAM);
         int pagesForView = paginationParams.get(paginationService.PAGES_FOR_VIEW_PARAM);
         this.pagination = paginationService.updatePagination(pagination, rowsPerPage, pagesForView, url);

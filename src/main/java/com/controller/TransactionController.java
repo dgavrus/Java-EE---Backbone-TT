@@ -1,16 +1,10 @@
 package com.controller;
 
-import com.dao.AccountDAOdb;
-import com.dao.TransactionDAOdb;
-import com.dao.UserDAOdb;
 import com.model.Account;
 import com.model.PaginationInfo;
 import com.model.Transaction;
 import com.model.User;
-import com.service.AccountService;
-import com.service.PaginationService;
-import com.service.TransactionService;
-import com.service.UserService;
+import com.service.*;
 import com.validator.TransactionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,6 +43,9 @@ public class TransactionController {
     @Autowired
     TransactionValidator transactionValidator;
 
+    @Autowired
+    ValidationService validationService;
+
     @RequestMapping(value = "/rest/transaction", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<Transaction> getUserTransactions(HttpServletRequest request){
@@ -80,7 +77,8 @@ public class TransactionController {
 
     @RequestMapping(value = "/rest/transaction/pagination", method = RequestMethod.GET)
     public @ResponseBody PaginationInfo pagination(HttpServletRequest request){
-        HashMap<String, Integer> paginationParams = paginationService.parsePaginationParams(request);
+        Map parameters = request.getParameterMap(); //It returns Map<String, String[]>
+        HashMap<String, Integer> paginationParams = paginationService.parsePaginationParams(parameters);
         int rowsPerPage = paginationParams.get(paginationService.ROWS_PER_PAGE_PARAM);
         int pagesForView = paginationParams.get(paginationService.PAGES_FOR_VIEW_PARAM);
         User authenticatedUser = userService.getAuthenticatedUser();
@@ -99,36 +97,8 @@ public class TransactionController {
     @RequestMapping(value = "/rest/transaction/validation", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity formValidation(HttpServletRequest request){
         Map parameters = request.getParameterMap();
-        if(parameters.containsKey("moneyAmount")){
-            Integer money;
-            money = Integer.parseInt(request.getParameter("moneyAmount"));
-            Account source = accountService.getAccount(userService.getAuthenticatedUser().getAccountId());
-            if(!source.isActive()){
-                return new ResponseEntity<String>(
-                        TransactionService.TransactionStatus.SOURCE_NOT_ACTIVATED.message(),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            else if(source.getMoneyAmount() < money){
-                return new ResponseEntity<String>(
-                        TransactionService.TransactionStatus.NOT_ENOUGH_MONEY.message(),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        } else if(parameters.containsKey("destAcc")){
-            Integer destAccId = Integer.parseInt(request.getParameter("destAcc"));
-            Account dest = accountService.getAccount(destAccId);
-            if(dest != null){
-                if(!dest.isActive()){
-                    return new ResponseEntity<String>(
-                            TransactionService.TransactionStatus.DEST_NOT_ACTIVATED.message(),
-                            HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            } else {
-                return new ResponseEntity<String>(
-                        TransactionService.TransactionStatus.DEST_ACCOUNT_NOT_EXISTS.message(),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-        return new ResponseEntity(TransactionService.TransactionStatus.SUCCESSFUL.message(), HttpStatus.OK);
+        ResponseEntity<String> responseEntity = validationService.transactionFieldsValidate(parameters);
+        return responseEntity;
     }
 
     private ArrayList<String> getErrorMessages(Errors errors){

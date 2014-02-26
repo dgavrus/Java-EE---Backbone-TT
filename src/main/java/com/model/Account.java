@@ -1,10 +1,7 @@
 package com.model;
 
-import com.dao.UserDAOdb;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 public class Account {
 
