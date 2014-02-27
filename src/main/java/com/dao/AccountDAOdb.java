@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface AccountDAOdb {
 
-    /*public void setDataSource(DataSource ds);*/
-
     public Account getAccount(int accountId);
 
     public List<Account> listAccounts();

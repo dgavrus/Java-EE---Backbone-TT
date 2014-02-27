@@ -15,13 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public class TransactionDAOdbImpl implements TransactionDAOdb {
-
-    private JdbcTemplate jdbcTemplateObject;
-
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplateObject = jdbcTemplate;
-    }
+public class TransactionDAOdbImpl extends AbstactDAOImpl implements TransactionDAOdb {
 
     public List<Transaction> userTransactionList(int accountId) {
         String query = "select * from transactions where source = ? or dest = ?";

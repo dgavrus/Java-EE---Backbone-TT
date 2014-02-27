@@ -17,16 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class AccountDAOdbImpl implements AccountDAOdb {
+public class AccountDAOdbImpl extends AbstactDAOImpl implements AccountDAOdb {
 
     @Autowired
     UserDAOdbImpl userDAOdb;
-
-    private JdbcTemplate jdbcTemplateObject;
-
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplateObject = jdbcTemplate;
-    }
 
     public Account getAccount(int accountId){
         String query = "select * from accounts where accountNumber = " + accountId;

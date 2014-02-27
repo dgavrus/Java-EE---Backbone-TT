@@ -13,13 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public class UserDAOdbImpl implements UserDAOdb {
-
-    private JdbcTemplate jdbcTemplateObject;
-
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
-        this.jdbcTemplateObject = jdbcTemplate;
-    }
+public class UserDAOdbImpl extends AbstactDAOImpl implements UserDAOdb {
 
     public void create(String login, String firstName, String lastName,
                        String password, Integer accountId) {
