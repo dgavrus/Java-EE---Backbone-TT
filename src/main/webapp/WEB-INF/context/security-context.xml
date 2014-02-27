@@ -8,7 +8,6 @@
 
     <http  use-expressions="true">
         <form-login login-page="/page"/>
-        <!--<logout logout-url="/rest/login" />-->
         <intercept-url pattern="/page" access="permitAll"/>
         <intercept-url pattern="/rest/login" access="permitAll"/>
         <intercept-url pattern="/rest/transaction/**" access="hasRole('Client')"/>
@@ -20,6 +19,5 @@
         <authentication-provider ref="customAuthenticationProvider"/>
     </authentication-manager>
 
-    <!--<beans:bean id="customAuthenticationProvider" class="com.security.CustomAuthenticationProvider"/>-->
 
 </beans:beans>
