@@ -1,3 +1,6 @@
+const PAGES_FOR_VIEW = 7;
+const ROWS_PER_PAGE = 10;
+
 window.templateLoader = {
 
     load: function(views, callback) {
@@ -78,7 +81,7 @@ window.Router = Backbone.Router.extend({
             page = 1;
         }
         var pages = new PaginationInfo({url:"rest/userslist/pagination"});
-        pages.set({pagesForView:7,rowsPerPage:10});
+        pages.set({pagesForView:PAGES_FOR_VIEW,rowsPerPage:ROWS_PER_PAGE});
         pages.fetch({
             data:{
                 pagesForView:pages.attributes.pagesForView,
@@ -123,7 +126,7 @@ window.Router = Backbone.Router.extend({
             page = 1;
         }
         var pages = new PaginationInfo({url:"rest/transaction/pagination"});
-        pages.set({pagesForView:7,rowsPerPage:10});
+        pages.set({pagesForView:PAGES_FOR_VIEW,rowsPerPage:ROWS_PER_PAGE});
         pages.fetch({
             data: {
                 pagesForView:pages.attributes.pagesForView,

@@ -1,6 +1,5 @@
 package com.controller;
 
-import com.model.Account;
 import com.model.PaginationInfo;
 import com.model.Transaction;
 import com.model.User;
