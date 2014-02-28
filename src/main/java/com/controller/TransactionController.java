@@ -13,16 +13,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 
-@Controller
+@RequestMapping(value = "/rest/transaction")
+@RestController
 public class TransactionController {
 
     private final String url = "/rest/transaction/pagination";
@@ -45,8 +43,8 @@ public class TransactionController {
     @Autowired
     ValidationService validationService;
 
-    @RequestMapping(value = "/rest/transaction", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public
     List<Transaction> getUserTransactions(HttpServletRequest request){
         User authenticatedUser = userService.getAuthenticatedUser();
         int pageNumber;
@@ -58,8 +56,8 @@ public class TransactionController {
         return transactionService.userTransactionList(authenticatedUser.getAccountId(), pageNumber, pagination.getRowsPerPage());
     }
 
-    @RequestMapping(value = "/rest/transaction", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity transaction(@RequestBody Transaction currentTransaction,
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity transaction(@RequestBody Transaction currentTransaction,
                                                     BindingResult transactionBinding) throws IOException {
         currentTransaction.setSourceAccountId(userService.getAuthenticatedUser().getAccountId());
         currentTransaction.setDate(new Date());
@@ -74,8 +72,8 @@ public class TransactionController {
         return new ResponseEntity<String>(result.message(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @RequestMapping(value = "/rest/transaction/pagination", method = RequestMethod.GET)
-    public @ResponseBody PaginationInfo pagination(HttpServletRequest request){
+    @RequestMapping(value = "/pagination", method = RequestMethod.GET)
+    public PaginationInfo pagination(HttpServletRequest request){
         Map parameters = request.getParameterMap(); //It returns Map<String, String[]>
         HashMap<String, Integer> paginationParams = paginationService.parsePaginationParams(parameters);
         int rowsPerPage = paginationParams.get(paginationService.ROWS_PER_PAGE_PARAM);
@@ -88,13 +86,13 @@ public class TransactionController {
         return this.pagination;
     }
 
-    @RequestMapping(value = "/rest/transaction/pagination", method = RequestMethod.POST)
-    public @ResponseBody void paginationPost(@RequestBody PaginationInfo pagination){
+    @RequestMapping(value = "/pagination", method = RequestMethod.POST)
+    public void paginationPost(@RequestBody PaginationInfo pagination){
         this.pagination = pagination;
     }
 
-    @RequestMapping(value = "/rest/transaction/validation", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity formValidation(HttpServletRequest request){
+    @RequestMapping(value = "/validation", method = RequestMethod.GET)
+    public ResponseEntity formValidation(HttpServletRequest request){
         Map parameters = request.getParameterMap();
         ResponseEntity<String> responseEntity = validationService.transactionFieldsValidate(parameters);
         return responseEntity;

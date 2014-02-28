@@ -8,15 +8,13 @@ import com.validator.TransactionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Controller
+@RequestMapping(value = "/rest/login")
+@RestController
 public class AuthenticationController {
 
     @Autowired
@@ -28,19 +26,9 @@ public class AuthenticationController {
     @Autowired
     TransactionValidator transactionValidator;
 
-    @RequestMapping(value = "/")
-    public String homepage1(){
-        return "redirect:/page";
-    }
-
-    @RequestMapping(value = "/page")
-    public String homepage2(){
-        return "page";
-    }
-
-    @RequestMapping(value = "/rest/login", method = {RequestMethod.POST, RequestMethod.PUT},
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT},
             consumes = "application/json")
-    public @ResponseBody
+    public
     LoginStatus login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginStatus loginStatus) {
 
         //Logout
@@ -59,8 +47,8 @@ public class AuthenticationController {
         return loginStatus;
     }
 
-    @RequestMapping(value = "/rest/login", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody LoginStatus login(){
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public LoginStatus login(){
         String login;
         String role;
         try {
