@@ -1,6 +1,7 @@
 package com.dao;
 
 import com.model.Transaction;
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -51,7 +52,7 @@ public class TransactionDAOdbImpl extends AbstactDAOImpl implements TransactionD
                         t.getSourceAccountId(),
                         t.getDestAccountId(),
                         t.getMoneyAmount(),
-                        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(t.getDate())});
+                        new DateTime().toString("yyyy-MM-dd HH:mm:ss")});
     }
 
     public JSONArray getTransactionJSONArray(int accountId){
@@ -78,12 +79,12 @@ public class TransactionDAOdbImpl extends AbstactDAOImpl implements TransactionD
             return transaction;
         }
 
-        private String dateToStringConverter(Date date){
+        private String dateToStringConverter(DateTime date){
             return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
         }
 
-        private Date stringToDateConverter(String date) throws ParseException {
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+        private DateTime stringToDateConverter(String date) throws ParseException {
+            return new DateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date));
         }
     }
 

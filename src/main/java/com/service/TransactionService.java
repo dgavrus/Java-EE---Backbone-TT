@@ -4,6 +4,7 @@ import com.dao.AccountDAOdb;
 import com.dao.TransactionDAOdb;
 import com.model.Account;
 import com.model.Transaction;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,7 @@ public class TransactionService {
         transactionDAOdb.addTransaction(
                 new Transaction(sourceAccountId,
                         destAccountId,
-                        moneyAmount, new Date())
+                        moneyAmount, new DateTime())
         );
         return TransactionStatus.SUCCESSFUL;
     }
@@ -94,7 +95,7 @@ public class TransactionService {
 
     public void fillTransaction(Transaction t){
         t.setSourceAccountId(userService.getAuthenticatedUser().getAccountId());
-        t.setDate(new Date());
+        t.setDate(new DateTime());
     }
 
     public void setTransactionDAOdb(TransactionDAOdb transactionDAOdb){

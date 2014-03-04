@@ -9,6 +9,7 @@ import org.jmock.Expectations;
 import static org.junit.Assert.*;
 
 import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class TransactionServiceTest {
 
     @Test
     public void notEnoughMoney() throws Exception {
-        final Transaction t12 = new Transaction(1,2,5,new Date());
+        final Transaction t12 = new Transaction(1,2,5,new DateTime());
         context.checking(new Expectations() {{
             Account source = new Account(1, 0, 1, 1, Account.Status.Active);
             Account dest = new Account(2, 5000, 2, 2, Account.Status.Active);
@@ -51,7 +52,7 @@ public class TransactionServiceTest {
     @Test
     public void Successful() throws Exception {
 
-        final Transaction t12 = new Transaction(1,2,5,new Date());
+        final Transaction t12 = new Transaction(1,2,5,new DateTime());
 
         context.checking(new Expectations() {{
             Account source = new Account(1, 5, 1, 1, Account.Status.Active);
@@ -70,7 +71,7 @@ public class TransactionServiceTest {
 
     @Test
     public void newSource() throws Exception {
-        final Transaction t12 = new Transaction(1,2,5,new Date());
+        final Transaction t12 = new Transaction(1,2,5,new DateTime());
         context.checking(new Expectations() {{
             Account source = new Account(1, 5, 1, 1, Account.Status.New);
             Account dest = new Account(2, 5000, 2, 2, Account.Status.Active);
@@ -85,7 +86,7 @@ public class TransactionServiceTest {
     @Test
 
     public void newDest() throws Exception {
-        final Transaction t12 = new Transaction(1,2,5,new Date());
+        final Transaction t12 = new Transaction(1,2,5,new DateTime());
         context.checking(new Expectations() {{
             Account source = new Account(1, 5, 1, 1, Account.Status.Active);
             Account dest = new Account(2, 5000, 2, 2, Account.Status.New);
@@ -99,7 +100,7 @@ public class TransactionServiceTest {
 
     @Test
     public void wrongMoneyFalseTest() {
-        final Transaction t12 = new Transaction(1,2,1,new Date());
+        final Transaction t12 = new Transaction(1,2,1,new DateTime());
         context.checking(new Expectations() {{
             Account source = new Account(1, 1, 1, 1, Account.Status.Active);
             Account dest = new Account(2, 0, 2, 2, Account.Status.New);

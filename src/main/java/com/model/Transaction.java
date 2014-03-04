@@ -3,6 +3,7 @@ package com.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.utils.DateSerializer;
+import org.joda.time.DateTime;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -10,7 +11,7 @@ import java.util.Date;
 
 public class Transaction {
 
-    public Transaction(int from, int to, long money, Date date){
+    public Transaction(int from, int to, long money, DateTime date){
         this.sourceAccountId = from;
         this.destAccountId = to;
         this.moneyAmount = money;
@@ -25,7 +26,7 @@ public class Transaction {
 
     private int destAccountId;
 
-    private Date date;
+    private DateTime date;
 
     private long moneyAmount;
 
@@ -46,11 +47,11 @@ public class Transaction {
     }
 
     @JsonSerialize (using = DateSerializer.class)
-    public Date getDate() {
+    public DateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(DateTime date) {
         this.date = date;
     }
 
@@ -68,7 +69,7 @@ public class Transaction {
         json.put("sourceAccountId",getSourceAccountId());
         json.put("destAccountId", getDestAccountId());
         json.put("moneyAmount",getMoneyAmount());
-        json.put("date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(getDate()));
+        json.put("date", new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(getDate()));
         return json;
     }
 }
