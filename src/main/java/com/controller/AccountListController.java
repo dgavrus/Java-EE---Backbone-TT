@@ -10,6 +10,9 @@ import com.service.TransactionService;
 import com.service.UserService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,8 +61,13 @@ public class AccountListController {
     }
 
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
-    public void updateAccountStatus(@RequestBody Account account){
-        accountService.updateAccountStatus(account);
+    public ResponseEntity<Account> updateAccountStatus(@RequestBody Account account){
+        try {
+            accountService.updateAccountStatus(account);
+        } catch (DataAccessException e){
+            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(account, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/transaction", method = RequestMethod.GET, produces = "application/json")

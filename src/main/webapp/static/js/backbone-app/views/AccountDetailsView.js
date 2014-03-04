@@ -34,15 +34,15 @@ window.AccountDetailsView = Backbone.View.extend({
     },
 
     changeStatus: function(status){
-        $('#dt').html(status +
-            "<b class=\"caret\"></b>");
+        var self = this;
         this.account.set({status: status});
         this.account.save(null, {
             success: function(){
-                this.collection.fetch();
+                $('#status' + self.account.attributes.accountNumber).html(status);
+                $('#status' + self.account.attributes.accountNumber).css('color', status == 'Active' ? 'green' : 'red');
+                var accountDetailsView = new AccountDetailsView(self.parent, self.account);
+                self.hide();
             }
         });
-        $('#status' + this.account.attributes.accountNumber).html(status);
-        $('#status' + this.account.attributes.accountNumber).css('color', status == 'Active' ? 'green' : 'red');
     }
 });
