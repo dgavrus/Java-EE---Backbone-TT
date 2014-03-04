@@ -3,7 +3,10 @@ package com.security;
 import com.dao.UserDAOdb;
 import com.model.LoginStatus;
 import com.model.User;
+import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +23,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     UserDAOdb userDAOdb;
+
+    @Autowired
+    UserService userService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -38,7 +44,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         return token;
     }
 
-    public LoginStatus authenticate(String username, String password){
+    private LoginStatus authenticate(String username, String password){
         User user;
         user = userDAOdb.getUserByLogin(username);
         if(user == null){
@@ -54,6 +60,35 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         password, authorities);
         SecurityContextHolder.getContext().setAuthentication(token);
         return new LoginStatus(user.getLogin(), null, true, user.getRole());
+    }
+
+    public LoginStatus authenticate(LoginStatus loginStatus){
+        return authenticate(loginStatus.getUsername(), loginStatus.getPassword());
+    }
+
+    public LoginStatus getLoginStatus(){
+        String login;
+        String role;
+        try {
+            login = userService.getAuthenticatedUser().getLogin();
+            role = userService.getAuthenticatedUser().getAuthority();
+        } catch (NullPointerException e){
+            login = role = null;
+        }
+        return new LoginStatus(login, null, login != null, role != null ? User.Role.valueOf(role) : null);
+    }
+
+    public void logout(){
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
+    public LoginStatus checkLoginStatus(LoginStatus loginStatus){
+        if(loginStatus.isLoggedIn() ||
+                (loginStatus.getUsername().isEmpty() && loginStatus.getPassword().isEmpty())){
+                    logout();
+            return new LoginStatus("sign in please", null, false, null);
+        }
+        return null;
     }
 
     @Override

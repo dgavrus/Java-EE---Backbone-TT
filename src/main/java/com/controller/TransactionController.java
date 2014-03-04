@@ -45,45 +45,33 @@ public class TransactionController {
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public
-    List<Transaction> getUserTransactions(HttpServletRequest request){
+    List<Transaction> getUserTransactions(@RequestParam(value = "page", defaultValue = "1") Integer pageNumber){
         User authenticatedUser = userService.getAuthenticatedUser();
-        int pageNumber;
-        try {
-            pageNumber = Integer.parseInt(request.getParameter("page"));
-        } catch (NumberFormatException e){
-            return transactionService.userTransactionList(authenticatedUser.getAccountId(), 1, pagination.getRowsPerPage());
-        }
         return transactionService.userTransactionList(authenticatedUser.getAccountId(), pageNumber, pagination.getRowsPerPage());
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity transaction(@RequestBody Transaction currentTransaction,
                                                     BindingResult transactionBinding) throws IOException {
-        currentTransaction.setSourceAccountId(userService.getAuthenticatedUser().getAccountId());
-        currentTransaction.setDate(new Date());
+        transactionService.fillTransaction(currentTransaction);
         transactionValidator.validate(currentTransaction, transactionBinding);
         if(transactionBinding.hasErrors()){
-            return new ResponseEntity<List<String>>(getErrorMessages(transactionBinding), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(transactionValidator.getErrorMessages(transactionBinding), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         TransactionService.TransactionStatus result = transactionService.makeTransaction(currentTransaction);
         if(result == TransactionService.TransactionStatus.SUCCESSFUL){
-            return new ResponseEntity<TransactionService.TransactionStatus>(result, HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         }
-        return new ResponseEntity<String>(result.message(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(result.message(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(value = "/pagination", method = RequestMethod.GET)
-    public PaginationInfo pagination(HttpServletRequest request){
-        Map parameters = request.getParameterMap(); //It returns Map<String, String[]>
-        HashMap<String, Integer> paginationParams = paginationService.parsePaginationParams(parameters);
-        int rowsPerPage = paginationParams.get(paginationService.ROWS_PER_PAGE_PARAM);
-        int pagesForView = paginationParams.get(paginationService.PAGES_FOR_VIEW_PARAM);
-        User authenticatedUser = userService.getAuthenticatedUser();
-        if(authenticatedUser == null){
-            throw new BadCredentialsException("You are not authenticated");
-        }
+    public PaginationInfo pagination(@RequestParam(value = PaginationService.PAGES_FOR_VIEW_PARAM,
+                defaultValue = PaginationService.MAX_PAGES) Integer pagesForView,
+            @RequestParam(value = PaginationService.ROWS_PER_PAGE_PARAM,
+                defaultValue = PaginationService.DEFAULT_ROWS_PER_PAGE) Integer rowsPerPage){
         pagination = paginationService.updatePagination(pagination, rowsPerPage, pagesForView, url);
-        return this.pagination;
+        return pagination;
     }
 
     @RequestMapping(value = "/pagination", method = RequestMethod.POST)
@@ -92,19 +80,10 @@ public class TransactionController {
     }
 
     @RequestMapping(value = "/validation", method = RequestMethod.GET)
-    public ResponseEntity formValidation(HttpServletRequest request){
-        Map parameters = request.getParameterMap();
-        ResponseEntity<String> responseEntity = validationService.transactionFieldsValidate(parameters);
+    public ResponseEntity formValidation(@RequestParam(value = ValidationService.MONEY_AMOUNT_PARAM, required = false) String moneyAmount,
+                                         @RequestParam(value = ValidationService.DEST_ACC_PARAM, required = false) String destAccId){
+        ResponseEntity<String> responseEntity = validationService.transactionFieldsValidate(moneyAmount, destAccId);
         return responseEntity;
-    }
-
-    private ArrayList<String> getErrorMessages(Errors errors){
-        List<ObjectError> objectErrors = errors.getAllErrors();
-        ArrayList<String> result = new ArrayList<String>();
-        for(ObjectError oe : objectErrors){
-            result.add(oe.getDefaultMessage());
-        }
-        return result;
     }
 
     private PaginationInfo pagination;

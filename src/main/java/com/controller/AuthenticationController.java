@@ -6,6 +6,8 @@ import com.security.CustomAuthenticationProvider;
 import com.service.UserService;
 import com.validator.TransactionValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,35 +31,23 @@ public class AuthenticationController {
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT},
             consumes = "application/json")
     public
-    LoginStatus login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginStatus loginStatus) {
-
+    ResponseEntity<LoginStatus> login(@RequestBody LoginStatus loginStatus) {
         //Logout
         if(loginStatus.isLoggedIn() ||
                 (loginStatus.getUsername().isEmpty() && loginStatus.getPassword().isEmpty())){
-            SecurityContextHolder.getContext().setAuthentication(null);
-            return new LoginStatus("sign in please", null, false, null);
+            customAuthenticationProvider.logout();
+            return new ResponseEntity<>(new LoginStatus("sign in please", null, false, null), HttpStatus.OK);
         }
-
-        String username = loginStatus.getUsername();
-        String password = loginStatus.getPassword();
-        loginStatus = customAuthenticationProvider.authenticate(username, password);
+        loginStatus = customAuthenticationProvider.authenticate(loginStatus);
         if(loginStatus.getUsername() == null || !loginStatus.isLoggedIn()){
-            response.setStatus(500);
+            return new ResponseEntity<>(loginStatus, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return loginStatus;
+        return new ResponseEntity<>(loginStatus, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public LoginStatus login(){
-        String login;
-        String role;
-        try {
-            login = userService.getAuthenticatedUser().getLogin();
-            role = userService.getAuthenticatedUser().getAuthority();
-        } catch (NullPointerException e){
-            login = role = null;
-        }
-        return new LoginStatus(login, null, login != null, role != null ? User.Role.valueOf(role) : null);
+        return customAuthenticationProvider.getLoginStatus();
     }
 
 }

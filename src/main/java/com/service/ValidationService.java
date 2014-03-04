@@ -11,9 +11,9 @@ import java.util.Map;
 @Service
 public class ValidationService {
 
-    public final String MONEY_AMOUNT_PARAM = "moneyAmount";
+    public static final String MONEY_AMOUNT_PARAM = "moneyAmount";
 
-    public final String DEST_ACC_PARAM = "destAcc";
+    public static final String DEST_ACC_PARAM = "destAcc";
 
     @Autowired
     AccountService accountService;
@@ -21,10 +21,10 @@ public class ValidationService {
     @Autowired
     UserService userService;
 
-    public ResponseEntity<String> transactionFieldsValidate(Map<String, String[]> parameters){
-        if(parameters.containsKey(MONEY_AMOUNT_PARAM)){
+    public ResponseEntity<String> transactionFieldsValidate(String moneyAmountParam, String destAccIdParam){
+        if(moneyAmountParam != null){
             Integer money;
-            money = Integer.parseInt(parameters.get(MONEY_AMOUNT_PARAM)[0]);
+            money = Integer.parseInt(moneyAmountParam);
             Account source = accountService.getAccount(userService.getAuthenticatedUser().getAccountId());
             if(!source.isActive()){
                 return new ResponseEntity<String>(
@@ -36,8 +36,8 @@ public class ValidationService {
                         TransactionService.TransactionStatus.NOT_ENOUGH_MONEY.message(),
                         HttpStatus.INTERNAL_SERVER_ERROR);
             }
-        } else if(parameters.containsKey(DEST_ACC_PARAM)){
-            Integer destAccId = Integer.parseInt(parameters.get(DEST_ACC_PARAM)[0]);
+        } else if(destAccIdParam != null){
+            Integer destAccId = Integer.parseInt(destAccIdParam);
             Account dest = accountService.getAccount(destAccId);
             if(dest != null){
                 if(!dest.isActive()){

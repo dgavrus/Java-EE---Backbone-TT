@@ -43,7 +43,7 @@ public class User implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return role == User.Role.Employee ? "Employee" : "Client";
+        return String.valueOf(role);
     }
 
     public enum Role {Employee, Client}

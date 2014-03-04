@@ -11,13 +11,13 @@ import java.util.Map;
 @Service
 public class PaginationService {
 
-    public final String ROWS_PER_PAGE_PARAM = "rowsPerPage";
+    public static final String ROWS_PER_PAGE_PARAM = "rowsPerPage";
 
-    public final String PAGES_FOR_VIEW_PARAM = "pagesForView";
+    public static final String PAGES_FOR_VIEW_PARAM = "pagesForView";
 
-    public final int MAX_PAGES = 7;
+    public static final String MAX_PAGES = "7";
 
-    public final int DEFAULT_ROWS_PER_PAGE = 10;
+    public static final String DEFAULT_ROWS_PER_PAGE = "10";
 
     private final String TRANSACTION_URL = "/rest/transaction/pagination";
 
@@ -39,37 +39,20 @@ public class PaginationService {
         return transactionDAOdb.getUserTransactionsCount(accountId);
     }
 
-    public HashMap<String, Integer> parsePaginationParams(Map<String, String[]> parameters){
-        int rowsPerPage;
-        int pagesForView;
-        try {
-            rowsPerPage = Integer.parseInt(parameters.get(ROWS_PER_PAGE_PARAM)[0]);
-            if(rowsPerPage < 1){
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException | NullPointerException e){
-            rowsPerPage = DEFAULT_ROWS_PER_PAGE;
-        }
-        try {
-            pagesForView = Integer.parseInt(parameters.get(PAGES_FOR_VIEW_PARAM)[0]);
-            if(pagesForView < 1){
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException | NullPointerException e){
-            pagesForView = MAX_PAGES;
-        }
-        HashMap<String, Integer> result = new HashMap<String, Integer>();
-        result.put(ROWS_PER_PAGE_PARAM, rowsPerPage);
-        result.put(PAGES_FOR_VIEW_PARAM, pagesForView);
-        return result;
-    }
-
     public PaginationInfo updatePagination(PaginationInfo pagination, int rowsPerPage, int pagesForView, String url){
+        int maxPages = Integer.parseInt(MAX_PAGES);
+        int defaultDowsPerPage = Integer.parseInt(DEFAULT_ROWS_PER_PAGE);
+        if(pagesForView < 1){
+            pagesForView = maxPages;
+        }
+        if(rowsPerPage < 1){
+            rowsPerPage = defaultDowsPerPage;
+        }
         int pages = getPagesCount(url, rowsPerPage);
         if(pagination == null){
-            pagination = new PaginationInfo(pages, 1, Math.min(Math.min(pages, pagesForView), MAX_PAGES), rowsPerPage, url);
+            pagination = new PaginationInfo(pages, 1, Math.min(Math.min(pages, pagesForView), maxPages), rowsPerPage, url);
         }
-        pagination.setPagesForView(Math.min(Math.min(pages, pagesForView), MAX_PAGES));
+        pagination.setPagesForView(Math.min(Math.min(pages, pagesForView), maxPages));
         pagination.setPagesCount(pages);
         pagination.setRowsPerPage(rowsPerPage);
         return pagination;

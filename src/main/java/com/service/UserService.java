@@ -12,6 +12,10 @@ public class UserService {
     @Autowired
     UserDAOdb userDAOdb;
 
+    public void setUserDAOdb(UserDAOdb userDAOdb) {
+        this.userDAOdb = userDAOdb;
+    }
+
     public User getAuthenticatedUser(){
         String login;
         try {

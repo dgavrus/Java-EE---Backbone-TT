@@ -11,6 +11,7 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <import resource="security-context.xml"/>
+    <mvc:view-controller path="/page" view-name="page"/>
 
     <context:component-scan base-package="com"/>
     <mvc:annotation-driven />

@@ -25,9 +25,8 @@ public class UserServiceTest {
     public void before() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("111","444"));
         userDAOdb = context.mock(UserDAOdb.class);
-        Field f1 = userService.getClass().getDeclaredField("userDAOdb");
-        f1.setAccessible(true);
-        f1.set(userService, userDAOdb);
+        userService.setUserDAOdb(userDAOdb);
+
     }
 
     @Test
@@ -48,7 +47,7 @@ public class UserServiceTest {
             oneOf(userDAOdb).getUserByLogin("111");
             will(returnValue(user));
         }});
-        Assert.assertFalse("This user has other role", userService.getAuthenticatedUser().getAuthority().equals(User.Role.Client));
+        Assert.assertFalse("This user has other role", userService.getAuthenticatedUser().getAuthority().equals(User.Role.Client.toString()));
     }
 
 }

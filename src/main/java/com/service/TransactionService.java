@@ -20,6 +20,9 @@ public class TransactionService {
     @Autowired
     private TransactionDAOdb transactionDAOdb;
 
+    @Autowired
+    private UserService userService;
+
     private boolean isEnoughMoney(Account account, long moneyRequired){
         return account.getMoneyAmount() >= moneyRequired;
     }
@@ -70,37 +73,28 @@ public class TransactionService {
     }
 
     public enum TransactionStatus {
-        WRONG_MONEY_AMOUNT {
-            public String message(){
-                return "* Money amount should be more than 0";
-            }
-        },
-        NOT_ENOUGH_MONEY {
-            public String message(){
-                return "* Money amount is not enough for making transaction";
-            }
-        },
-        SOURCE_NOT_ACTIVATED {
-            public String message(){
-                return "* Your account is not activated";
-            }
-        },
-        DEST_NOT_ACTIVATED {
-            public String message(){
-                return "* Destination account is not activated";
-            }
-        },
-        DEST_ACCOUNT_NOT_EXISTS {
-            public String message(){
-                return "* Destination account is not exists";
-            }
-        },
-        SUCCESSFUL {
-            public String message(){
-                return "Transaction completed";
-            }
-        };
-        public abstract String message();
+
+        WRONG_MONEY_AMOUNT("* Money amount should be more than 0"),
+        NOT_ENOUGH_MONEY("* Money amount is not enough for making transaction"),
+        SOURCE_NOT_ACTIVATED("* Your account is not activated"),
+        DEST_NOT_ACTIVATED("* Destination account is not activated"),
+        DEST_ACCOUNT_NOT_EXISTS("* Destination account is not exists"),
+        SUCCESSFUL("Transaction completed");
+
+        private String message;
+
+        TransactionStatus(String s) {
+            message = s;
+        }
+
+        public String message(){
+            return message;
+        }
+    }
+
+    public void fillTransaction(Transaction t){
+        t.setSourceAccountId(userService.getAuthenticatedUser().getAccountId());
+        t.setDate(new Date());
     }
 
     public void setTransactionDAOdb(TransactionDAOdb transactionDAOdb){

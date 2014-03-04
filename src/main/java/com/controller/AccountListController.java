@@ -39,24 +39,17 @@ public class AccountListController {
 
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
     public
-    List<ClientAccount> getUsersList(HttpServletRequest request) throws JSONException, IOException {
-        int pageNumber;
-        try {
-            pageNumber = Integer.parseInt(request.getParameter("page"));
-        } catch (NumberFormatException e){
-            pageNumber = 1;
-        }
+    List<ClientAccount> getUsersList(@RequestParam(value = "page", defaultValue = "1") int pageNumber) throws JSONException, IOException {
         return accountService.listClientAccounts(pageNumber, pagination.getRowsPerPage());
     }
 
     @RequestMapping(value = "/pagination", method = RequestMethod.GET)
-    public PaginationInfo pagination(HttpServletRequest request){
-        Map parameters = request.getParameterMap();
-        HashMap<String, Integer> paginationParams = paginationService.parsePaginationParams(parameters);
-        int rowsPerPage = paginationParams.get(paginationService.ROWS_PER_PAGE_PARAM);
-        int pagesForView = paginationParams.get(paginationService.PAGES_FOR_VIEW_PARAM);
-        this.pagination = paginationService.updatePagination(pagination, rowsPerPage, pagesForView, url);
-        return this.pagination;
+    public PaginationInfo pagination(@RequestParam(value = PaginationService.PAGES_FOR_VIEW_PARAM,
+            defaultValue = PaginationService.MAX_PAGES) Integer pagesForView,
+                                     @RequestParam(value = PaginationService.ROWS_PER_PAGE_PARAM,
+                                             defaultValue = PaginationService.DEFAULT_ROWS_PER_PAGE) Integer rowsPerPage){
+        pagination = paginationService.updatePagination(pagination, rowsPerPage, pagesForView, url);
+        return pagination;
     }
 
     @RequestMapping(value = "/pagination", method = RequestMethod.POST)
@@ -71,8 +64,7 @@ public class AccountListController {
 
     @RequestMapping(value = "/transaction", method = RequestMethod.GET, produces = "application/json")
     public
-    List<Transaction> getUserTransactions(HttpServletRequest request){
-        int accountNumber = Integer.parseInt(request.getParameter("accountNumber"));
+    List<Transaction> getUserTransactions(@RequestParam(value = "accountNumber") int accountNumber){
         List<Transaction> result = transactionService.userTransactionListDesc(accountNumber, 5);
         return result;
     }
