@@ -4,6 +4,7 @@ window.LoginView = Backbone.View.extend({
         $('#usernamediv').html("Hello, sign in please");
         this.render();
         console.log('Initializing Login View');
+        /*loginStatus.on('sync', this.username, this);*/
         $('#signIn').validationEngine();
     },
 
@@ -25,9 +26,9 @@ window.LoginView = Backbone.View.extend({
             success: function(data, response){
                 console.log(data);
                 switch (data.attributes.role){
-                    case "Client": location.hash = "#transactions";
+                    case "Client": app.navigate("#transactions", {trigger: true});
                                     break;
-                    case "Employee": location.hash = "#accounts";
+                    case "Employee": app.navigate("#accounts", {trigger: true});
                                     break;
                 }
             },
@@ -41,5 +42,8 @@ window.LoginView = Backbone.View.extend({
             }
         });
 
-    }
+    },
+    /*username:function(){
+        $('#usernamediv').html("Hello, sign in please");
+    }*/
 });

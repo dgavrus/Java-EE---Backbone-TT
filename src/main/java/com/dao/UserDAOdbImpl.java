@@ -15,14 +15,6 @@ import java.util.List;
 @Repository
 public class UserDAOdbImpl extends AbstactDAOImpl implements UserDAOdb {
 
-    public void create(String login, String firstName, String lastName,
-                       String password, Integer accountId) {
-        String query = "insert into users (login, firstname, lastname, " +
-                "password, accountId) values (?, ?, ?, ?, ?)";
-        jdbcTemplateObject.update(query, firstName, lastName, password, accountId);
-
-    }
-
     public User getUserById(Integer id) {
         String SQL = "select * from users where id = ?";
         User user;
@@ -74,10 +66,6 @@ public class UserDAOdbImpl extends AbstactDAOImpl implements UserDAOdb {
             return null;
         }
         return ln;
-    }
-
-    public void delete(Integer id) {
-
     }
 
     public JSONArray getUsersJSONArray(){

@@ -23,10 +23,10 @@ public class AccountDAOdbImpl extends AbstactDAOImpl implements AccountDAOdb {
     UserDAOdbImpl userDAOdb;
 
     public Account getAccount(int accountId){
-        String query = "select * from accounts where accountNumber = " + accountId;
+        String query = "select * from accounts where accountNumber = ?";
         Account account;
         try {
-            account = jdbcTemplateObject.queryForObject(query, new AccountMapper());
+            account = jdbcTemplateObject.queryForObject(query, new Object[]{accountId}, new AccountMapper());
         } catch (EmptyResultDataAccessException e){
             return null;
         }
@@ -45,22 +45,23 @@ public class AccountDAOdbImpl extends AbstactDAOImpl implements AccountDAOdb {
     }
 
     public List<Account> listAccounts(int page, int count) {
-        String query = "select * from accounts limit " + ((page - 1) * count) + "," + count;
-        List<Account> accountList = jdbcTemplateObject.query(query, new AccountMapper());
+        String query = "select * from accounts limit ?, ?";
+        List<Account> accountList = jdbcTemplateObject.query(query, new Object[]{(page - 1) * count, count}, new AccountMapper());
         return accountList;
     }
 
     public List<ClientAccount> listClientAccounts(int page, int count) {
         String query = "select a.*, u.firstname, u.lastname from accounts as a " +
                 "inner join users as u on a.accountNumber=u.accountid " +
-                "limit " + ((page - 1) * count) + "," + count;
-        List<ClientAccount> clientAccountsList = jdbcTemplateObject.query(query, new ClientAccountMapper());
+                "limit ?, ?";
+        List<ClientAccount> clientAccountsList = jdbcTemplateObject.query(query, new Object[]{(page - 1) * count, count},
+                new ClientAccountMapper());
         return clientAccountsList;
     }
 
     public void updateAccount(Account account){
-        String query = "update accounts set moneyAmount=" + account.getMoneyAmount() + " where id=" + account.getId();
-        jdbcTemplateObject.update(query);
+        String query = "update accounts set moneyAmount=? where id=?";
+        jdbcTemplateObject.update(query, new Object[]{account.getMoneyAmount(), account.getId()});
     }
 
     public JSONArray getAccountJSONArray(){
@@ -76,8 +77,8 @@ public class AccountDAOdbImpl extends AbstactDAOImpl implements AccountDAOdb {
     }
 
     public void updateAccountStatus(Account account){
-        String query = "update accounts set status=\"" + account.getStatus() + "\" where accountNumber=" + account.getAccountNumber();
-        jdbcTemplateObject.update(query);
+        String query = "update accounts set status=? where accountNumber=?";
+        jdbcTemplateObject.update(query, new Object[]{String.valueOf(account.getStatus()), account.getAccountNumber()});
     }
 
     public class AccountMapper implements RowMapper<Account> {

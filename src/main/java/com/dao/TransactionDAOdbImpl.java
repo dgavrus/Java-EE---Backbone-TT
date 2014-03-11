@@ -26,16 +26,16 @@ public class TransactionDAOdbImpl extends AbstactDAOImpl implements TransactionD
     }
 
     public List<Transaction> userTransactionListDesc(int accountId, int count) {
-        String query = "select * from transactions where source = ? or dest = ? " + "order by id desc limit " + count;
+        String query = "select * from transactions where source = ? or dest = ? order by id desc limit ?";
         List<Transaction> transactionList = jdbcTemplateObject.query(
-                query, new Object[]{accountId, accountId}, new TransactionMapper());
+                query, new Object[]{accountId, accountId, count}, new TransactionMapper());
         return transactionList;
     }
 
     public List<Transaction> userTransactionList(int accountId, int page, int count) {
-        String query = "select * from transactions where source = ? or dest = ? limit " + ((page - 1) * count) + ", " + count;
+        String query = "select * from transactions where source = ? or dest = ? limit ?, ?";
         List<Transaction> transactionList = jdbcTemplateObject.query(
-                query, new Object[]{accountId, accountId}, new TransactionMapper());
+                query, new Object[]{accountId, accountId, (page - 1) * count, count}, new TransactionMapper());
         return transactionList;
     }
 

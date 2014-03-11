@@ -18,13 +18,19 @@ window.LogoutView = Backbone.View.extend({
     },
 
     logout: function(){
+        var self = this;
         loginStatus.save(null, {
             success: function(){
                 console.log("logout success");
-                location.href = "/page";
+                loginStatus.fetch({
+                    success: function(){
+                        $("#logoutForm").remove();
+                        app.navigate("", {trigger: true});
+                    }
+                });
             }
         });
-        loginStatus.fetch();
+
         console.log("hello");
     }
 });

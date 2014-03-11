@@ -13,7 +13,6 @@ window.PaginationView = Backbone.View.extend({
 
     paginationParams: null,
 
-
     getPages: function(){
         var sp, lp;
         var current = this.paginationParams.attributes.activePage;

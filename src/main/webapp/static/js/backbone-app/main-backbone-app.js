@@ -61,11 +61,9 @@ window.Router = Backbone.Router.extend({
                                         break;
                     }
                 } else {
-                    if (!self.loginView) {
-                        self.loginView = new LoginView();
-                        self.loginView.render();
-                        $('#content').html(self.loginView.el);
-                    }
+                    self.loginView = new LoginView();
+                    self.loginView.render();
+                    $('#content').html(self.loginView.el);
                     console.log("hmmm...");
                 }
             },
@@ -169,9 +167,13 @@ window.Router = Backbone.Router.extend({
 function successFetch(data, self, pages, view){
     if(!self.logoutView){
         self.logoutView = new LogoutView();
+    } else if($("#logoutForm").length == 0){
+        self.logoutView.render();
     }
     if(!this.paginationView){
         this.paginationView = new PaginationView({paginationParams:pages});
+    } else {
+        this.paginationView.paginationParams = pages;
     }
     this.paginationView.render();
     this.paginationView.paginationParams.set({activePage:pages.attributes.activePage});
