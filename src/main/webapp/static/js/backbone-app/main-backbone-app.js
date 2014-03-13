@@ -46,7 +46,7 @@ window.Router = Backbone.Router.extend({
 
     login: function() {
         var self = this;
-        loginStatus = new LoginStatus();
+        loginStatus = new LoginStatusModel();
         loginStatus.fetch({
             success: function(){
                 console.log(loginStatus.attributes.loggedIn);
@@ -78,7 +78,7 @@ window.Router = Backbone.Router.extend({
         if(!page){
             page = 1;
         }
-        var pages = new PaginationInfo({url:"rest/userslist/pagination"});
+        var pages = new PaginationInfoModel({url:"rest/userslist/pagination"});
         pages.set({pagesForView:PAGES_FOR_VIEW,rowsPerPage:ROWS_PER_PAGE});
         pages.fetch({
             data:{
@@ -94,7 +94,7 @@ window.Router = Backbone.Router.extend({
                 pages.attributes.activePage = page;
                 pages.save();
 
-                loginStatus = new LoginStatus();
+                loginStatus = new LoginStatusModel();
                 loginStatus.fetch();
 
                 if(!self.accountList){
@@ -103,10 +103,10 @@ window.Router = Backbone.Router.extend({
 
                 self.accountList.fetch({
                     data: $.param({page: page}),
-                    success: function(data){
-                        successFetch(data, self, pages)
+                    success: function(){
+                        accountsSuccessFetch(self, pages)
                     },
-                    error: function(err, xhr, status){
+                    error: function(err, xhr){
                         errorFetch(xhr, self);
                     }
                 });
@@ -123,7 +123,7 @@ window.Router = Backbone.Router.extend({
         if(!page){
             page = 1;
         }
-        var pages = new PaginationInfo({url:"rest/transaction/pagination"});
+        var pages = new PaginationInfoModel({url:"rest/transaction/pagination"});
         pages.set({pagesForView:PAGES_FOR_VIEW,rowsPerPage:ROWS_PER_PAGE});
         pages.fetch({
             data: {
@@ -139,7 +139,7 @@ window.Router = Backbone.Router.extend({
                 pages.attributes.activePage = page;
                 pages.save();
 
-                loginStatus = new LoginStatus();
+                loginStatus = new LoginStatusModel();
                 loginStatus.fetch();
 
                 if(!self.userTransactions){
@@ -149,9 +149,9 @@ window.Router = Backbone.Router.extend({
                 self.userTransactions.fetch({
                     data: $.param({ page: page}),
                     success: function(data){
-                        successFetch(data, self, pages)
+                        transactionsSuccessFetch(self, pages)
                     },
-                    error: function(err, xhr, status){
+                    error: function(err, xhr){
                         errorFetch(xhr, self);
                     }
                 });
@@ -164,7 +164,7 @@ window.Router = Backbone.Router.extend({
 });
 
 
-function successFetch(data, self, pages, view){
+function successFetchInit(pages){
     if(!self.logoutView){
         self.logoutView = new LogoutView();
     } else if($("#logoutForm").length == 0){
@@ -177,20 +177,20 @@ function successFetch(data, self, pages, view){
     }
     this.paginationView.render();
     this.paginationView.paginationParams.set({activePage:pages.attributes.activePage});
-    if(pages.attributes.url.search("transaction") > 0){
-        if (!self.transactionsView || true) {
-            self.transactionsView = new TransactionsView({collection:self.userTransactions,pagination:this.paginationView});
-            self.transactionsView.render();
-            $('#content').html(self.transactionsView.el);
-        }
-    } else {
-        if (!self.accountsView || true) {
-            self.accountsView = new AccountsView({collection:self.accountList,pagination:this.paginationView});
-            self.accountsView.render();
-            $('#content').html(self.accountsView.el);
-        }
-    }
-    console.log("success");
+}
+
+function transactionsSuccessFetch(self, pages){
+    successFetchInit(pages)
+    self.transactionsView = new TransactionsView({collection:self.userTransactions,pagination:this.paginationView});
+    self.transactionsView.render();
+    $('#content').html(self.transactionsView.el);
+}
+
+function accountsSuccessFetch(self, pages){
+    successFetchInit(pages);
+    self.accountsView = new AccountsView({collection:self.accountList,pagination:this.paginationView});
+    self.accountsView.render();
+    $('#content').html(self.accountsView.el);
 }
 
 function errorFetch(xhr, self){

@@ -2,7 +2,7 @@ window.AccountsView = Backbone.View.extend({
 
     initialize:function (params) {
         this.pagination = params.pagination;
-        this.collection.on('sync', this.render, this);
+        this.collection.once('sync', this.render, this);
         this.pagination.paginationParams.on('sync',this.render, this);
         loginStatus.on('sync', this.username, this);
         loginStatus.fetch();

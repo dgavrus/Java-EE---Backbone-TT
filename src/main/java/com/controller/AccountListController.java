@@ -11,6 +11,8 @@ import com.service.UserService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.TransientDataAccessException;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -65,7 +67,7 @@ public class AccountListController {
         try {
             accountService.updateAccountStatus(account);
         } catch (DataAccessException e){
-            return new ResponseEntity(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Couldn't update status", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(account, HttpStatus.OK);
     }

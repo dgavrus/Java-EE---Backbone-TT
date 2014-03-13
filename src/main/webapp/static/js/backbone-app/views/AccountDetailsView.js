@@ -16,13 +16,15 @@ window.AccountDetailsView = Backbone.View.extend({
         });
     },
 
-    render:function(){
+    render:function(account){
         $('#detailsModalBody').html(this.template());
         var modalTemplate = $.templates('#modalTemplate');
         modalTemplate.link(this.$('#modalResult'), this.account.toJSON());
         var modalTransactionsTemplate = $.templates('#modalTransactionsTemplate');
         modalTransactionsTemplate.link(this.$('#modalTransactions'), this.lastTransactions.toJSON());
-        $('#detailsModal').modal('show');
+        if(!account){
+            $('#detailsModal').modal('show');
+        }
         var self = this;
         $('#active').click(function(){
             self.changeStatus("Active");
@@ -35,13 +37,16 @@ window.AccountDetailsView = Backbone.View.extend({
 
     changeStatus: function(status){
         var self = this;
-        this.account.set({status: status});
-        this.account.save(null, {
-            success: function(){
+        var oldStatus = this.account.attributes.status;
+        this.account.save({status: status}, {
+            success: function(account){
                 $('#status' + self.account.attributes.accountNumber).html(status);
                 $('#status' + self.account.attributes.accountNumber).css('color', status == 'Active' ? 'green' : 'red');
-                var accountDetailsView = new AccountDetailsView(self.parent, self.account);
-                self.hide();
+                self.render(account);
+            },
+            error: function(message, response){
+                self.account.set('status', oldStatus);
+                $('.dropdown-menu').validationEngine('showPrompt', response.responseText);
             }
         });
     }

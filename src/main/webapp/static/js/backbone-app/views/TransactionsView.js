@@ -31,7 +31,7 @@ window.TransactionsView = Backbone.View.extend({
     makeTransaction : function() {
         $("#transactionForm").validationEngine('hide');
         if($("#transactionForm").validationEngine('validate')){
-             var currentTransaction = new Transaction({
+             var currentTransaction = new TransactionModel({
                 destAccountId:$('#destAcc').val(),
                 moneyAmount:$('#moneyAmount').val()
             })

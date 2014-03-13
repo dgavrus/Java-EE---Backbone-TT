@@ -1,4 +1,4 @@
-var LoginStatus = Backbone.Model.extend({
+var LoginStatusModel = Backbone.Model.extend({
     defaults:{
         username: 'sign in please',
         password: '',
@@ -10,7 +10,7 @@ var LoginStatus = Backbone.Model.extend({
 
 });
 
-var Account = Backbone.Model.extend({
+var AccountModel = Backbone.Model.extend({
     defaults:{
         id: null,
         moneyAmount: null,
@@ -23,7 +23,7 @@ var Account = Backbone.Model.extend({
     url: 'rest/userslist'
 });
 
-var Transaction = Backbone.Model.extend({
+var TransactionModel = Backbone.Model.extend({
     defaults:{
         sourceAccountId: null,
         destAccountId: null,
@@ -36,16 +36,16 @@ var Transaction = Backbone.Model.extend({
 });
 
 var TransactionList = Backbone.Collection.extend({
-    model: Transaction,
+    model: TransactionModel,
     url: "rest/transaction"
 });
 
 var AccountList = Backbone.Collection.extend({
-    model: Account,
+    model: AccountModel,
     url: "rest/userslist"
 });
 
-var PaginationInfo = Backbone.Model.extend({
+var PaginationInfoModel = Backbone.Model.extend({
 
     initialize: function(params){
         this.url = params.url;
